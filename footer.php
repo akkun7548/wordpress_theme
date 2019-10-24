@@ -1,0 +1,18 @@
+<footer class="footer">
+    <div>
+        <ul>
+            <?php
+            $args = array(
+                'theme_location' => 'footer-nav',
+                'container' => '',
+                'items_wrap' => '%3$s'
+            );
+            wp_nav_menu( $args );
+            ?>
+        </ul>
+    </div>
+    <small>&copy; 2019 野生動物研究会</small>
+</footer>
+<?php wp_footer(); ?>
+</body>
+</html>
