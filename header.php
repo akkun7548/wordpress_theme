@@ -1,3 +1,37 @@
+<?php
+$menu_list = '';
+if( ( $locations = get_nav_menu_locations() ) && isset( $locations['header-nav'] ) ) {
+    $menu = wp_get_nav_menu_object( $locations['header-nav'] );
+    $menu_items = wp_get_nav_menu_items( $menu->term_id );
+    $slug = '';
+    foreach( (array) $menu_items as $menu_item ) {
+        $title = $menu_item->title;
+        $url = $menu_item->url;
+        $slug = get_post( $menu_item->object_id )->post_name;
+        $menu_list .= '<li class="nav-item';
+        if( is_page( $slug ) ){
+            $menu_list .= ' active';
+        } else {
+            if( $slug === 'report' ) {
+                if( is_page( 'internalreport' ) ) {
+                    $menu_list .= ' active';
+                } else {
+                    $slug = 'post';
+                }
+            }
+            if( is_page() ) {
+                $post_type = (array) get_query_var( 'post_type' );
+            } else {
+                $post_type = (array) yd_post_type();
+            }
+            if( in_array( $slug, $post_type ) ) {
+                $menu_list .= ' active';
+            }
+        }
+        $menu_list .= '"><a href="' . esc_url( $url ) . '" class="nav-link">' . esc_html( $title ) . '</a></li>' . "\n";
+    }
+}
+?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
@@ -16,36 +50,7 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
-                    <?php
-                    $menu_name = 'header-nav';
-                    if( ( $locations = get_nav_menu_locations() ) && isset( $locations[ $menu_name ] ) ) {
-                        $menu = wp_get_nav_menu_object( $locations[ $menu_name ] );
-                        $menu_items = wp_get_nav_menu_items( $menu->term_id );
-                        $menu_list = '';
-                        $page_slug = '';
-                        foreach( (array) $menu_items as $key => $menu_item ) {
-                            $title = $menu_item->title;
-                            $url = $menu_item->url;
-                            $page_slug = str_replace( home_url( '/' ), '', $url );
-                            $menu_list .= '<li class="nav-item';
-                            if( empty( $page_slug ) && is_front_page() ) {
-                                $menu_list .= ' active';
-                            } elseif( ! empty( $page_slug ) && is_page( $page_slug ) ){
-                                $menu_list .= ' active';
-                            } elseif( $page_slug === 'report' && is_page( 'internalreport' ) ) {
-                                $menu_list .= ' active';
-                            } elseif( $page_slug === 'report' && ( get_query_var( 'post_type' ) === 'post' || get_post_type() === 'post' ) ) {
-                                $menu_list .= ' active';
-                            } elseif( $page_slug === 'news' && ( get_query_var( 'post_type' ) === 'news' || get_post_type() === 'news' ) ) {
-                                $menu_list .= ' active';
-                            }
-                            $menu_list .= '"><a href="' . $url . '" class="nav-link">' . $title . '</a></li>' . "\n";
-                        }
-                    } else {
-                        $menu_list = '<li class="nav-item">' . __( 'ヘッダーメニューがありません。' ) . '</li>';
-                    }
-                    echo $menu_list;
-                    ?>
+                    <?php echo $menu_list; ?>
                 </ul>
             </div>
         </div>

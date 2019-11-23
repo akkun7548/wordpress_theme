@@ -1,11 +1,24 @@
+<?php
+if ( has_post_thumbnail() ) {
+    $thumb = get_the_post_thumbnail();
+} else {
+    $thumb = '<img src="' . esc_url( yd_first_image( false ) ) . '" alt="' . esc_attr( get_the_title() ) . '">';
+}
+$date = '';
+$year = get_the_time( 'Y' );
+$month = get_the_time( 'n' );
+$day = get_the_time( 'j' );
+$links[$year . '年'] = get_year_link( $year );
+$links[$month . '月'] = get_month_link( $year, $month );
+$links[$day . '日'] = get_day_link( $year, $month, $day );
+foreach( $links as $key => $value ) {
+    $date .= '<object><a href="' . esc_url( $value ) . '">' . esc_html( $key ) . '</a></object>';
+}
+?>
 <a href="<?php the_permalink(); ?>" class="row d-sm-flex summary stripe">
     <div class="col-sm-3 d-sm-flex align-items-center">
         <figure class="summary">
-        <?php if ( has_post_thumbnail() ) : ?>
-            <?php the_post_thumbnail( 'thumbnail' ); ?>
-        <?php else : ?>
-            <img src="<?php yd_first_image(); //functions.php ?>" alt="<?php the_title(); ?>">
-        <?php endif ; ?>
+            <?php echo $thumb; ?>
         </figure>
     </div>
     <div class="col-sm-9">
@@ -14,11 +27,9 @@
             <?php the_excerpt(); ?>
         </div>
         <div class="row justify-content-end summary-info">
-            <p class="summary">投稿者：<object><a href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>"><?php the_author(); ?></a></object></p>
-            <p class="summary">投稿日：<object><a href="<?php echo get_month_link( get_the_time( 'Y' ), get_the_time( 'm' ) ); ?>"><?php the_time( 'n月' ); ?></a></object><?php the_time( 'j日' ); ?></p>
-            <?php if( has_tag() ) : ?>
-                <p class="summary">タグ：<?php the_tags('<object>','、','</object>'); ?></p>
-            <?php endif; ?>
+            <p class="summary">投稿者：<object><?php the_author_posts_link(); ?></object></p>
+            <p class="summary">投稿日：<?php echo $date; ?></p>
+            <?php the_tags( '<p class="summary">タグ：<object>', '、', '</object></p>' ); ?>
         </div>
     </div>
 </a>

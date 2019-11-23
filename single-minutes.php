@@ -1,8 +1,8 @@
 <?php
+get_header();
 if( have_posts() ) :
     while( have_posts() ) :
-        the_post();
-get_header(); ?>
+        the_post(); ?>
 <main>
 <div class="main_visual">
 </div>
@@ -22,8 +22,10 @@ get_header(); ?>
     </div>
 </div>
 </main>
-<?php get_footer();
+    <?php
     endwhile;
 else:
     wp_safe_redirect( home_url(), 302 );
-endif; ?>
+    exit;
+endif;
+get_footer(); ?>

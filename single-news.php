@@ -1,10 +1,10 @@
 <?php
+get_header();
 if( have_posts() ) :
     while( have_posts() ) :
-        the_post();
-get_header(); ?>
+        the_post(); ?>
 <main>
-<div class="main_visual">
+<div class="main_visual container-fluid">
     <img src="<?php echo get_template_directory_uri(); ?>/images/main_visual.jpg" alt="メインビジュアル画像">
     <h1><?php the_title(); ?></h1>
     <div class="row justify-content-end info_common_1">
@@ -15,7 +15,7 @@ get_header(); ?>
 <div class="wrapper container-fluid">
 <!--コンテンツ-->
     <div class="row d-lg-flex flex-row-reverse">
-        <div <?php post_class( 'content col-lg-8 common_1 ' . esc_html( $post->post_name ) ); ?>>
+        <div <?php post_class( 'content col-lg-8 common_1 ' . esc_attr( $post->post_name ) ); ?>>
             <?php the_content(); ?>
             <div class="clear-both"></div>
             <?php wp_link_pages(); ?>
@@ -27,8 +27,10 @@ get_header(); ?>
     </div>
 </div>
 </main>
-<?php get_footer();
+    <?php 
     endwhile;
 else:
     wp_safe_redirect( home_url(), 302 );
-endif; ?>
+    exit;
+endif;
+get_footer(); ?>

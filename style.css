@@ -202,11 +202,14 @@ page.php, internal.php, single-news.php, archive.php, archive-news.php, search.p
     padding: 10px;
 }
 div.info_common_1 {
-    padding: 0 10px;
+    width: 100%;
+    padding: 5px 0;
+    margin: 0;
 }
 p.info_common_1 {
     font-size: 0.9rem;
     padding: 5px;
+    margin: 0;
 }
 .common_1 li {
     padding: 10px 0;
@@ -340,6 +343,9 @@ div.comment {
     padding: 6px 5px;
     margin: 15px 0;
 }
+.type-minutes h1 + p {
+    padding-top: 15px;
+}
 
 
 /* ============================= <テンプレートファイル> ============================= */
@@ -422,7 +428,8 @@ p.title {
     margin: 0;
 }
 .pagination {
-    padding: 30px 10px;
+    width: 100%;
+    padding: 30px 0;
 }
 .pagination span, .pagination a {
     background-color: white;

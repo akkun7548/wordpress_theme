@@ -1,8 +1,18 @@
 <?php
+get_header();
 if( have_posts() ) :
     while( have_posts() ) :
     the_post();
-    get_header(); ?>
+    $date = '';
+    $year = get_the_time( 'Y' );
+    $month = get_the_time( 'n' );
+    $day = get_the_time( 'j' );
+    $links[$year . '年'] = get_year_link( $year );
+    $links[$month . '月'] = get_month_link( $year, $month );
+    $links[$day . '日'] = get_day_link( $year, $month, $day );
+    foreach( $links as $key => $value ) {
+        $date .= '<a href="' . esc_url( $value ) . '">' . esc_html( $key ) . '</a>';
+    } ?>
 <main>
 <div class="main_visual"></div>
 <div class="wrapper container-fluid">
@@ -12,12 +22,8 @@ if( have_posts() ) :
             <article <?php post_class(); ?>>
                 <h1><?php the_title(); ?></h1>
                 <div class="row justify-content-end info_single-post">
-                    <?php
-                    if( has_tag() ) : ?>
-                        <p class="info_single-post"><?php the_tags('タグ ',', ',''); ?></p>
-                    <?php
-                    endif; ?>
-                    <p class="info_single-post">投稿日 <?php the_time( 'Y年' ) ?><a href="<?php echo get_month_link( get_the_time( 'Y' ), get_the_time( 'm' ) ); ?>"><?php the_time( 'n月' ); ?></a><?php the_time( 'j日' ) ?></p>
+                    <?php the_tags('<p class="info_single-post">タグ ',', ','</p>'); ?>
+                    <p class="info_single-post">投稿日 <?php echo $date; ?></p>
                     <p class="info_single-post">更新日 <?php the_modified_date( 'Y年n月j日' ); ?></p>
                 </div>
                 <?php the_content(); ?>
@@ -46,8 +52,9 @@ if( have_posts() ) :
 </div>
 </main>
     <?php
-    get_footer();
     endwhile;
 else:
     wp_safe_redirect( home_url(), 302 );
-endif; ?>
+    exit;
+endif;
+get_footer(); ?>
