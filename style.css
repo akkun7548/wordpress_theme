@@ -89,6 +89,8 @@ main {
 }
 .navbar-brand img {
     height: 40px;
+}
+.navbar-brand img.pc {
     margin-left: 1rem;
 }
 .navbar-dark .navbar-nav .active > .nav-link,
@@ -622,7 +624,6 @@ a.list:hover {
 .sticky {
     position: -webkit-sticky;
     position: sticky;
-    top: 66px;
 }
 
 }

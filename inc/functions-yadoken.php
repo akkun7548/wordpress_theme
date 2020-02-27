@@ -119,12 +119,12 @@ function yadoken_archive_title( $name ) {
     $title = single_tag_title( 'タグ：', false );
   } elseif( is_tax() ) {
     $title = single_term_title( 'ターム：', false );
-  } elseif( is_day() ) {
-    $title = get_the_time( 'Y年n月j日' ) . 'の' . $name;
-  } elseif( is_month() ) {
-    $title = get_the_time( 'Y年n月' ) . 'の' . $name;
-  } elseif( is_year() ) {
-    $title = get_the_time( 'Y年' ) . 'の' . $name;
+  } elseif( is_day() && $time = get_the_time( 'Y年n月j日' ) ) {
+    $title = $time . 'の' . $name;
+  } elseif( is_month() && $time = get_the_time( 'Y年n月' ) ) {
+    $title = $time . 'の' . $name;
+  } elseif( is_year() && $time = get_the_time( 'Y年' ) ) {
+    $title = $time . 'の' . $name;
   /**
    * get_queried_object()ではWP_User以外のオブジェクトが取得されてしまうこともあったため、
    * 取得方法を変更しました。
