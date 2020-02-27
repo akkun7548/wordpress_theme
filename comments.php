@@ -1,5 +1,14 @@
-<?php if( have_comments() ) : ?>
-<h2 class="comment">コメント</h2>
+<?php
+/**
+ * このファイルはcomments_template()で呼び出されます。
+ * wordpressデフォルトのテンプレートでは文字列中のリンクがずれているなどしたため、
+ * 独自で作成しました。
+ * またコメントをログイン必須とした場合、非ログイン時にログイン画面へのリンクが表示される
+ * のですが、セキュリティの都合上このリンクは非公開にしたいので削除しました。
+ */
+if( have_comments() ) :
+?>
+<h2 class="comment-title">コメント</h2>
 <div class="comment-list">
     <?php wp_list_comments( array(
         'avatar_size' => '36',
@@ -7,7 +16,8 @@
         'format' => 'html5'
     ) ); ?>
 </div>
-<?php endif;
+<?php
+endif;
 $commenter = wp_get_current_commenter();
 $req = get_option( 'require_name_email' );
 $aria_req = ( $req ? " aria-required='true' required" : '' );

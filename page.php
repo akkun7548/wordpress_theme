@@ -1,34 +1,30 @@
 <?php
+/**
+ * このファイルは固定ページを表示する際に使用されます。
+ */
 get_header();
 if( have_posts() ) :
     while( have_posts() ) :
-    the_post(); ?>
-<main>
-<div class="main_visual container-fluid">
-    <img src="<?php echo get_template_directory_uri(); ?>/images/main_visual.jpg" alt="メインビジュアル画像">
+    the_post();
+    ?>
+<div class="title_common_1">
     <h1><?php the_title(); ?></h1>
-    <?php if( ! is_page( array( 'internalreport', 'minutes' ) ) ) : ?>
-    <div class="row justify-content-end info_common_1">
-        <p class="info_common_1">作成日 <?php the_time( 'Y年n月j日' ); ?></p>
-        <p class="info_common_1">更新日 <?php the_modified_date( 'Y年n月j日' ); ?></p>
-    </div>
-    <?php endif; ?>
 </div>
-<div class="wrapper container-fluid">
-<!--コンテンツ-->
-    <div class="row d-lg-flex flex-row-reverse">
-        <div <?php post_class( 'content col-lg-8 common_1 ' . esc_attr( $post->post_name ) ); ?>>
-            <?php the_content(); ?>
-            <div class="clear-both"></div>
-            <?php wp_link_pages(); ?>
-        </div>
-<!--サイドバー-->
-        <aside class="sidebar col-lg-4 align-self-lg-stretch">
-            <?php get_sidebar(); ?>
-        </aside>
-    </div>
+<div class="row justify-content-end info_common_1">
+    <p>作成日 <?php the_time( 'Y年n月j日' ); ?></p>
+    <p>更新日 <?php the_modified_date( 'Y年n月j日' ); ?></p>
 </div>
-</main>
+<div class="row d-lg-flex flex-row-reverse wrapper">
+    <div <?php post_class( 'col-lg-8 content common_1 ' . esc_attr( $post->post_name ) ); ?>>
+        <?php the_content(); ?>
+        <div style="clear: both;"></div>
+        <?php wp_link_pages(); ?>
+        <?php comments_template(); ?>
+    </div>
+    <aside class="col-lg-4 align-self-lg-stretch sidebar">
+        <?php get_sidebar(); ?>
+    </aside>
+</div>
     <?php
     endwhile;
 else:

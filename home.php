@@ -1,44 +1,39 @@
 <?php
-$post_type = yd_post_type();
-if( $post_type === 'post' ) {
-    $title = get_queried_object()->post_title;
+/**
+ * このファイルはデフォルト投稿タイプのpostの投稿一覧を表示するために使用されます。
+ * 設定 > 表示設定 > ホームページの設定 のラジオボタンで固定ページを選択しつつ、
+ * 投稿ページの方で選択したページはこのファイルを元に表示されます。
+ */
+$post_type = yadoken_post_type();
+$name = yadoken_post_type_name( $post_type, false, ' & ' );
+if( $post_type === 'post' && ( $obj = get_queried_object() ) instanceof WP_Post ) {
+    $title = $obj->post_title;
 } else {
-    $name = yd_post_type_name( $post_type, false );
     $title = $name . '一覧';
 }
 get_header();
 ?>
-<main>
-<div class="main_visual">
-    <img src="<?php echo get_template_directory_uri(); ?>/images/main_visual.jpg" alt="メインビジュアル画像">
+<div class="title_common_1">
     <h1><?php echo esc_html( $title ); ?></h1>
 </div>
-<div class="wrapper container-fluid">
-<!--コンテンツ-->
-    <div class="row d-lg-flex flex-row-reverse">
-        <div class="content col-lg-8 common_1">
-            <?php
-            get_search_form();
-            get_template_part( 'sortmenu' );
-            if( have_posts() ) :
-                while( have_posts() ) :
-                    the_post();
-                    yd_display_post();
-                endwhile;
-                echo do_shortcode( '[pagination]' );
-            else:
-                if( empty( $name ) ) {
-                    $name = yd_post_type_name( $post_type, false );
-                } ?>
-                <p>該当する<?php echo esc_html( $name ); ?>はありません。</p>
-            <?php
-            endif; ?>
-        </div>
-<!--サイドバー-->
-        <aside class="sidebar col-lg-4 align-self-lg-stretch">
-            <?php get_sidebar(); ?>
-        </aside>
+<div class="row d-lg-flex flex-row-reverse wrapper">
+    <div class="col-lg-8 content common_1">
+        <?php
+        get_search_form();
+        get_template_part( 'template-parts/sortmenu' );
+        if( have_posts() ) :
+            while( have_posts() ) :
+                the_post();
+                yadoken_display_post();
+            endwhile;
+            echo do_shortcode( '[pagination]' );
+        else: ?>
+            <p><?php echo esc_html( $name ); ?>はありません。</p>
+        <?php
+        endif; ?>
     </div>
+    <aside class="col-lg-4 align-self-lg-stretch sidebar">
+        <?php get_sidebar(); ?>
+    </aside>
 </div>
-</main>
 <?php get_footer(); ?>

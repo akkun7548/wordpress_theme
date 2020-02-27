@@ -4,9 +4,6 @@ Theme Name: yadoken
 Description: 筑波大学野生動物研究会のオリジナルテーマです。
 */
 
-/*更新した際にはfunctions.phpのstyle.cssを読み込むwp_enqueue_style()のversionを上げておくと、
-ブラウザのキャッシュが更新されます。*/
-
 /* ================================== <全ページ共通> ================================== */
 body {
     background-color: #f5f1e9;
@@ -14,19 +11,25 @@ body {
 }
 main {
     max-width: 1200px;
-    margin: 0 auto;
-}
-.wrapper {
-    padding: 0 15px;
-}
-.content, .sidebar {
-    padding: 10px 10px 20px 10px;
-}
-.sidebar {
+    margin-right: auto;
+    margin-left: auto;
+    padding: 70px 15px 0;
     min-height: 1000px;
 }
-.content > p:first-child {
-    padding-top: 5px;
+/* sliderがある時mainに追加 */
+.with-slider {
+    padding-top: 0;
+}
+.wrapper {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+}
+.content {
+    padding: 10px 0 20px 10px;
+}
+.sidebar {
+    padding: 10px 10px 20px 0;
 }
 .content a, .sidebar ul a, .footer a {
     color: #ff8800;
@@ -35,8 +38,42 @@ main {
     color: #ff5100;
     text-decoration: none;
 }
-.clear-both { /*回り込みを防ぐブロックを作れます。*/
-    clear: both;
+/* 画像カバーをヘッダーより下のレイヤにする。 */
+.has-background-dim {
+    z-index: 100;
+}
+.wp-block-image img {
+    height: auto;
+}
+/* 参照：https://make.wordpress.org/accessibility/handbook/markup/the-css-class-screen-reader-text/ */
+/* Text meant only for screen readers. */
+.screen-reader-text {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    word-wrap: normal !important;
+}
+.screen-reader-text:focus {
+    background-color: #eee;
+    clip: auto !important;
+    clip-path: none;
+    color: #444;
+    display: block;
+    font-size: 1em;
+    height: auto;
+    left: 5px;
+    line-height: normal;
+    padding: 15px 23px 14px;
+    text-decoration: none;
+    top: 5px;
+    width: auto;
+    z-index: 100000; /* Above WP toolbar. */
 }
 
 /* ==================================== 部品 ==================================== */
@@ -48,82 +85,125 @@ main {
 }
 .navbar {
     background-color: #441e08;
+    transition: 1s;
 }
-.navbar .navbar-brand {
-    height: 50px;
+.navbar-brand img {
+    height: 40px;
+    margin-left: 1rem;
 }
-.navbar .navbar-brand img {
-    height: 100%;
-}
-.navbar .navbar-nav .active > .nav-link {
+.navbar-dark .navbar-nav .active > .nav-link,
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus,
+.navbar-dark .navbar-nav .show > .nav-link {
     color: #ffce11;
 }
-.navbar .navbar-nav .nav-link:hover,
-.navbar .navbar-nav .nav-link:focus {
-    color: #ffce11;
+.dropdown-menu {
+    background-color: #441e08;
+    transition: 1s;
+}
+.dropdown-toggle {
+    background-color: #5c2a0c;
+    transition: 1s;
+}
+/* スライダーと重なった時の色 */
+.transparent {
+    background-color: rgba(0,0,0,0.55);
 }
 
-/* ================================= メイン画像 ================================= */
-.main_visual {
+/* ================================= スライダー ================================= */
+.slider-title {
+    position: relative;
     text-align: center;
-    padding: 80px 10px 0 10px;
+    z-index: 100;
+    padding-top: 100px;
 }
-.main_visual img {
-    width: 100%;
+.slider-title span {
+    background-color: rgba(0,0,0,0.55);
+    color: white;
+}
+.slider-thumb {
+    margin-bottom: 5px;
+}
+.slider-thumb:nth-child(2) {
+    margin-top: -146px;
+}
+.slider-thumb img {
+    margin-right: auto;
+    margin-left: auto;
+    height: 500px;
+}
+.slider-caption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 5px;
+}
+.slider-caption p {
+    display: inline-block;
+    background-color: rgba(0,0,0,0.55);
+    margin-bottom: 0;
+    padding: 5px;
+    color: white;
+}
+.slider-nav .slider-item {
+    margin: 5px;
+}
+.slider-nav .slider-item:not(.slick-current) {
+    background-color: black;
+    transition: 0.5s;
+}
+.slider-nav .slider-item:not(.slick-current) img {
+    opacity: 0.55;
+    transition: 0.5s;
+}
+.slider-nav img {
+    height: 100px;
+}
+.slick-arrow.slick-prev {
+    left: 5%;
+    z-index: 100;
+}
+.slick-arrow.slick-next {
+    right: 5%;
+    z-index: 100;
 }
 
 /* ================================= サイドバー ================================= */
-.sidebar h2:first-child {
-    margin: 0;
+.widget_sidebar {
+    margin-bottom: 25px;
 }
-.sidebar h2 {
+.widget_sidebar h2 {
     font-size: 1.2rem;
     padding: 8px;
-    margin: 20px 0 0 0;
     text-align: center;
     border-bottom: dotted 2px black;
 }
-.sidebar_list {
+.widget_sidebar:not(.widget_text) ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-.sidebar_list li {
-    padding: 3px;
-    margin:5px;
+.widget_sidebar:not(.widget_text) li {
     background-color: rgb(251, 253, 255);
+    margin:5px;
+    padding: 3px;
     text-align: center;
     border-radius: 5px;
 }
-.sidebar_list li:hover {
+.widget_sidebar:not(.widget_text) li:hover {
     background-color: #ffdd98;
 }
-.sidebar_list a {
+.widget_sidebar:not(.widget_text) li a {
     display: block;
     width: 100%;
-    height: 100%;
 }
-.sidebar_share {
-    margin: 0;
-    padding: 7px;
-    list-style: none;
+.widget_sidebar .gallery img {
+    max-width: 100%;
+    height: auto;
+}
+.widget_sidebar #wp-calendar {
+    width: 100%;
     text-align: center;
-}
-.sidebar_share li {
-    padding: 5px;
-    display: inline;
-}
-.sidebar_share a:hover {
-    text-decoration: none;
-}
-.twitter {
-    color: #55acee;
-}
-.facebook {
-    color: #3b5998;
-}
-.line {
-    color: #1dcd00;
 }
 
 /* ==================================== フッター ==================================== */
@@ -153,63 +233,67 @@ main {
     padding: 0 8px;
 }
 
-
 /* ================================ <共通1 (common_1)> ================================ */
 /* 以下のページに対しての共通スタイリングです。
-page.php, internal.php, single-news.php, archive.php, archive-news.php, search.php 404.php */
-.main_visual h1 {
+page.php, single-news.php, archive.php, archive-news.php, search.php 404.php home.php*/
+.title_common_1 {
+    background-color: white;
+    margin: 20px 0 5px;
+    padding-bottom: 13px;
+    border: 1px solid #96664b;
+    border-radius: 2px;
+}
+.title_common_1 h1 {
     font-size: 1.6rem;
     background-color: #96664b;
     color: #f5f1e9;
-    padding: 7px;
-    border-radius: 3px;
-    margin: 12px 0 0 0;
+    margin-bottom: 0;
+    padding: 8px 7px 7px;
+    text-align: center;
 }
-.main_visual h1:last-child {
-    margin-bottom: 24px;
+.info_common_1 {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+    padding: 5px 0;
+}
+.info_common_1 p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    padding: 5px;
 }
 .common_1 > h2:first-child {
-    margin: 0 0 15px 0;
+    margin: 0 0 15px;
 }
 .common_1 > h2 {
     font-size: 1.4rem;
     color: #441e08;
+    margin: 25px 0 15px;
     padding: 7px;
-    margin: 25px 0 15px 0;
     border-top: 2px solid #441e08;
     border-right: 2px solid #441e08;
     border-bottom: 5px solid #441e08;
     border-left: 5px solid #441e08;
-    border-radius: 5px;
+    border-radius: 5px 3px;
 }
 .common_1 > h3 {
     font-size: 1.2rem;
     color: #441e08;
-    padding: 7px 5px;
     margin: 5px 0;
+    padding: 7px 5px;
     border-bottom: 2px solid black;
 }
 .common_1 > h4 {
     font-size: 1.1rem;
     color: #441e08;
-    border-left: 2px solid #441e08;
+    margin: 20px 5px 10px;
     padding-left: 7px;
-    margin: 20px 5px 10px 5px;
+    border-left: 2px solid #441e08;
 }
-.common_1 p {
+.common_1 > p {
     font-size: 1rem;
     line-height: 1.65rem;
     padding: 10px;
-}
-div.info_common_1 {
-    width: 100%;
-    padding: 5px 0;
-    margin: 0;
-}
-p.info_common_1 {
-    font-size: 0.9rem;
-    padding: 5px;
-    margin: 0;
 }
 .common_1 li {
     padding: 10px 0;
@@ -217,47 +301,45 @@ p.info_common_1 {
 
 
 /* ================================ <single-post.php> ================================ */
-.single-post .main_visual {
-    padding-bottom: 10px;
-}
 .post {
-    padding: 5px;
-    margin: 0 0 20px 0;
-    border: 1px solid rgb(235, 235, 235);
     background-color: white;
+    margin-bottom: 20px;
+    padding: 5px;
+    border: 1px solid rgb(235, 235, 235);
     word-wrap: break-word;
 }
 .post h1 {
     font-size: 1.6rem;
-    padding: 7px 7px 12px 7px;
-    margin: 0;
+    padding: 7px 7px 12px;
+    margin-bottom: 0;
     border-bottom: 2px solid #dad4cc;
 }
-div.info_single-post {
-    padding: 0;
-    margin: 1px;
+.info_post {
+    margin-right: 0;
+    margin-left: 0;
+    padding: 1px;
 }
-p.info_single-post {
+.info_post p {
     font-size: 0.9rem;
-    padding: 3px;
-    margin: 1px;
+    margin-bottom: 0;
+    padding: 4px;
 }
 .post > h2 {
     font-size: 1.4rem;
-    padding: 6px 5px;
     margin: 15px 0;
+    padding: 6px 5px;
     border-bottom: 2px solid #dad4cc;
 }
 .post > h3 {
     font-size: 1.2rem;
-    padding: 6px 5px;
     margin: 15px 0;
+    padding: 6px 5px;
     border-bottom: 2px solid #dad4cc;
 }
 .post > h4 {
     font-size: 1.1rem;
-    padding: 6px 5px;
     margin: 15px 0;
+    padding: 6px 5px;
 }
 .post ul li {
     padding: 10px 0;
@@ -267,81 +349,37 @@ p.info_single-post {
     line-height: 1.65rem;
     padding: 10px;
 }
-.has-background-dim { /* 画像カバーをヘッダーより下のレイヤにする。 */
-    z-index: 100;
-}
-.wp-block-image img {
-    height: auto;
-}
-div.author {
-    padding: 15px 0;
-}
-p.author {
-    font-size: 1.2rem;
-    padding: 0;
-    margin: 1px;
-}
-.comment-list {
-    margin: 15px 0;
-}
-h2.comment, h2.author, #reply-title {
-    font-size: 1.3rem;
-    border-bottom: 3px double black;
-    padding: 5px;
-    margin: 15px 0;
-}
-div.comment {
-    padding: 5px;
-    word-wrap: break-word;
-}
-#comment {
-    width: 100%;
-    height: 100px;
-}
-.post-nav-links {
-    padding: 15px 10px 0 10px;
-    margin: 1px;
-    vertical-align: center;
-    text-align: right;
-}
-.post-page-numbers {
-    padding: 5px 8px;
-    margin: 4px;
-    background-color: white;
-    border: 1px solid rgb(201, 201, 201);
-    border-radius: 2px;
-}
 
 /* ============================= <single-minutes.php> ============================= */
 .type-minutes {
-    padding: 15px;
-    margin: 0 0 20px 0;
-    border: 1px solid rgb(235, 235, 235);
     background-color: white;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid rgb(235, 235, 235);
     word-wrap: break-word;
 }
 .type-minutes h1 {
     font-size: 1.6rem;
-    padding: 7px 7px 12px 7px;
-    margin: 0;
+    margin-bottom: 0;
+    padding: 7px 7px 12px;
     border-bottom: 2px solid #dad4cc;
 }
 .type-minutes > h2 {
     font-size: 1.4rem;
-    padding: 6px 5px;
     margin: 15px 0;
+    padding: 6px 5px;
     border-bottom: 2px solid #dad4cc;
 }
 .type-minutes > h3 {
     font-size: 1.2rem;
-    padding: 6px 5px;
     margin: 15px 0;
+    padding: 6px 5px;
     border-bottom: 2px solid #dad4cc;
 }
 .type-minutes > h4 {
     font-size: 1.1rem;
-    padding: 6px 5px;
     margin: 15px 0;
+    padding: 6px 5px;
 }
 .type-minutes h1 + p {
     padding-top: 15px;
@@ -349,83 +387,118 @@ div.comment {
 
 
 /* ============================= <テンプレートファイル> ============================= */
+/* ================================= comments.php ================================= */
+.comment-title, #reply-title {
+    font-size: 1.3rem;
+    margin: 15px 0;
+    padding: 5px;
+    border-bottom: 3px double black;
+}
+.comment-list {
+    margin: 15px 0;
+}
+.comment-list .comment {
+    padding: 5px;
+    word-wrap: break-word;
+}
+textarea#comment {
+    width: 100%;
+    height: 100px;
+}
+
 /* ================================= summary.php ================================= */
 /* summaryの親要素はdivなどの構造が作れる要素になるようにしてください。 */
-.content a.summary { /* aタグは親要素のコンテンツモデルを引き継ぐため、ここではdivタグのように扱っています。 */
-    color: black;
-    border: 1px solid rgb(201, 201, 201);
+/* aタグは親要素のコンテンツモデルを引き継ぐため、ここではdivタグのように扱っています。 */
+a.summary {
     background-color: white;
-    padding: 5px;
+    color: black;
+    min-height: 214px;
     margin: 15px 0;
-    min-height: 200px;
+    padding: 10px;
+    border: 1px solid rgb(201, 201, 201);
 }
-a.summary img {
+a.summary:hover {
+    color: black;
+}
+.summary figure {
+    margin-bottom: 0;
+}
+.summary img {
     width: 100%;
     height: auto;
     transition: all 0.3s ease;
 }
-a.summary:hover img {
+.summary:hover img {
     filter: brightness(105%);
 }
-figure.summary {
-    padding-top: 10px;
-}
-h3.summary {
+.summary h3 {
+    width: 100%;
     font-size: 1.2rem;
+    margin: 10px 0 5px;
+    padding: 4px 7px 7px;
     border-left: 3px solid black;
     border-bottom: 3px double black;
-    padding: 4px 7px 7px 7px;
-    margin: 10px 10px 0 0;
 }
-p.summary {
-    padding: 6px;
-    margin: 1px;
+.figure_summary {
+    padding: 3px;
 }
-.summary-excerpt {
-    min-height: 102px;
-    padding: 0;
-    margin: 0;
+.excerpt_summary p {
+    margin-bottom: 0;
+    padding: 5px;
 }
-.summary-excerpt p {
-    padding: 12px 8px;
-    margin: 0;
+.info_summary {
+    margin-right: 0;
+    margin-left: 0;
+    padding: 4px 0;
 }
-.summary-info {
-    padding: 0;
-    margin: 0;
+.info_summary p {
+    margin-bottom: 0;
+    padding: 2px 6px;
 }
 
 /* ==================================== title.php ==================================== */
-.content a.title {
-    color: black;
-    border: 1px solid rgb(201, 201, 201);
+a.title {
     background-color: white;
-    padding: 3px;
+    color: black;
     margin: 15px 1px;
+    padding: 3px;
+    border: 1px solid rgb(201, 201, 201);
     transition: all 0.3s ease;
 }
-.content a.title:hover {
+a.title:hover {
+    color: black;
     filter: brightness(120%);
 }
-div.title {
-    padding: 0;
-    margin: 5px -8px;
+.col_title {
+    padding-right: 0;
+    padding-left: 0;
+}
+.row_title {
+    margin: 5px 0;
     border-bottom: 3px double #441e08;
 }
-h2.title {
+.title h2 {
     font-size: 1.2rem;
+    margin-bottom: 0;
     padding: 10px 5px;
-    margin: 0;
 }
-p.title {
-    margin: 0;
+.title p {
+    margin-bottom: 0;
     padding: 5px 8px;
 }
 
-/* ====================== searchform.php, [pagination], [loop] ====================== */
+/* ==================================== その他 ==================================== */
+/* searchform.php, [pagination], [loop], list.php, wp_link_pages() */
 .searchform {
+    margin-right: 0;
+    margin-left: 0;
+}
+.searchform p {
+    margin-bottom: 0;
     padding: 5px;
-    margin: 0;
+}
+.searchform form {
+    padding: 5px;
 }
 .pagination {
     width: 100%;
@@ -433,22 +506,37 @@ p.title {
 }
 .pagination span, .pagination a {
     background-color: white;
-    padding: 5px 10px;
     margin: 0 5px;
+    padding: 5px 10px;
     border: 1px solid rgb(201, 201, 201);
     border-radius: 3px;
 }
-.content .list {
-    color: black;
+a.list {
     background-color: white;
-    padding: 5px;
+    color: black;
     margin: 15px 0;
+    padding: 5px;
     border: 1px solid rgb(201, 201, 201);
+}
+a.list:hover {
+    color: black;
 }
 .list h2 {
     color: black;
     font-size: 1.25rem;
-    padding: 7px 6px 0 6px;
+    padding: 7px 6px 0;
+}
+.post-nav-links {
+    margin-bottom: 0;
+    padding: 15px 10px 0;
+    text-align: right;
+}
+.post-page-numbers {
+    margin: 4px;
+    padding: 5px 8px;
+    background-color: white;
+    border: 1px solid rgb(201, 201, 201);
+    border-radius: 2px;
 }
 
 
@@ -457,18 +545,18 @@ p.title {
 .home > figure {
     padding: 10px 10px 0 10px;
 }
-.home figcaption {
+.home > figure figcaption {
     text-align: center;
 }
-.home dl {
+.home > dl {
     padding-left: 10px;
 }
-.home dt {
+.home > dl dt {
     float: left;
     width: 8em;
     margin-bottom: 10px;
 }
-.home dd {
+.home > dl dd {
     margin-left: 8em;
     margin-bottom: 10px;
 }
@@ -534,7 +622,7 @@ p.title {
 .sticky {
     position: -webkit-sticky;
     position: sticky;
-    top: 8px;
+    top: 66px;
 }
 
 }
@@ -547,22 +635,11 @@ p.title {
 .pc {
     display: none;
 }
-
+main {
+    min-height: auto;
 }
-
-/* ===================== wordpress admin-bar対応(601px 未満) ===================== */
-/* headタグ内、adminbarのメディアクエリによる上書き防止のため、反映されない時は詳細度を計算しましょう。*/
-@media screen and (max-width:600.98px) {
-.header {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-}
-.main_visual {
-    padding: 14px 10px 20px 10px;
-}/* position:stickyは初期位置で高さを持つため、その対応です。 */
-.main_visual img {
-    width: 100%;
+.content, .sidebar {
+    padding: 5px;
 }
 
 }
@@ -571,65 +648,60 @@ p.title {
 /*スマホ対応です。スマホで表示がおかしいと感じた時はここを修正しましょう。*/
 @media screen and (max-width:575.98px) {
 /* ***************全ページ共通*************** */
+main {
+    padding: 60px 0 0;
+}
 .content {
-    padding: 5px;
+    padding: 0;
 }
-.sidebar {
-    padding: 5px;
+.navbar-brand img {
+    height: 35px;
 }
-.sp100 {/*576px未満で画像の幅を100%にします。*/
+/* 576px未満で画像の幅を100%にします。 */
+.sp100 {
     width: 100%;
 }
-
-/* *******************部品******************* */
-.main_visual {
-    padding: 14px 5px 20px 5px;
+.slider-thumb img {
+    height: 250px;
+}
+.slider-nav img {
+    height: 70px;
 }
 
 /* ******************共通1****************** */
-.main_visual h1:last-child {
-    margin-bottom: 0;
-}
-.common_1 p {
+.common_1 > p {
     padding: 5px;
 }
 
 /* ***************single-post.php*************** */
-.post {
-    margin: 0 -5px 20px -5px;
-}
 .post > p {
     padding: 5px;
 }
 
 /* **************テンプレートファイル************** */
-.content a.summary {
+a.summary {
     height: auto;
     border: none;
-    margin: -5px;
+    margin: 0;
 }
-a.summary img{
+.summary img {
     padding: 10px;
 }
 :nth-child(odd).stripe.summary {
     background-color: #f5f1e9;
 }
-p.title {
+.title p {
     padding: 3px 5px;
 }
 :nth-child(even).stripe {
     background-color: white;
-}
-.searchform {
-    padding: 10px;
-    margin: -5px;
 }
 :nth-child(even).stripe .page-numbers {
     background-color: #f5f1e9;
 }
 
 /* *******************個別ページ******************* */
-.home figure {
+.home > figure {
     padding: 5px 5px 0 5px;
 }
 .shinkan2019 table {

@@ -1,35 +1,31 @@
 <?php
+/**
+ * このファイルは検索結果を表示する際に使用されます。
+ */
 $result = get_search_query() . ' (' . $wp_query->found_posts . '件)';
 get_header();
 ?>
-<main>
-<div class="main_visual">
-    <img src="<?php echo get_template_directory_uri(); ?>/images/main_visual.jpg" alt="メインビジュアル画像">
+<div class="title_common_1">
     <h1>検索結果：<?php echo esc_html( $result ); ?></h1>
 </div>
-<div class="wrapper container-fluid">
-<!--コンテンツ-->
-    <div class="row d-lg-flex flex-row-reverse">
-        <div class="content col-lg-8 common_1">
+<div class="row d-lg-flex flex-row-reverse wrapper">
+    <div class="col-lg-8 content common_1">
+        <?php
+        get_search_form();
+        get_template_part( 'template-parts/sortmenu' );
+        if ( have_posts() ) :
+            while ( have_posts() ) :
+                the_post();
+                yadoken_display_post();
+            endwhile;
+            echo do_shortcode( '[pagination]' );
+        else : ?>
+            <p>該当する<?php yadoken_post_type_name( yadoken_post_type(), true, '、' ); ?>はありません。</p>
             <?php
-            get_search_form();
-            get_template_part( 'sortmenu' );
-            if ( have_posts() ) :
-                while ( have_posts() ) :
-                    the_post();
-                    yd_display_post();
-                endwhile;
-                echo do_shortcode( '[pagination]' );
-            else : ?>
-                <p>該当する<?php yd_post_type_name( yd_post_type() ); ?>はありません。</p>
-                <?php
-            endif; ?>
-        </div>
-<!--サイドバー-->
-        <aside class="sidebar col-lg-4 align-self-lg-stretch">
-            <?php get_sidebar(); ?>
-        </aside>
+        endif; ?>
     </div>
+    <aside class="col-lg-4 align-self-lg-stretch sidebar">
+        <?php get_sidebar(); ?>
+    </aside>
 </div>
-</main>
 <?php get_footer(); ?>

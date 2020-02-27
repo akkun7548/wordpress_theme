@@ -1,3 +1,10 @@
+<?php
+/**
+ * このファイルは全ページテンプレートでget_footer()により読み込まれます。
+ * wp_footer()ではjavascriptのファイルを読み込むタグなどが出力されます。
+ */
+?>
+</main>
 <footer class="footer">
     <div>
         <ul>
