@@ -485,7 +485,6 @@ function yadoken_update_callback( $instance, $new_instance ) {
  * 全ウィジェットに表示場所の選択機能を追加(出力)
  * 
  * 配列のキーに当該ページのスラッグが含まれているかで、表示するかを判定しています。
- * ヘッダーのスライダーに表示できるものをギャラリー一つのみにしました。
  * 
  * $instanceをfalseにすることで当該ウィジェットが表示されなくなります。
  * 
@@ -516,18 +515,6 @@ function yadoken_display_callback( $instance, $widget, $args ) {
       } else {
        $instance = false;
       }
-    }
-  }
-  //スライダーのウィジェットエリアで表示できるウィジェットをギャラリー１つだけに限定しています。
-  if( $args['id'] === 'slider' ) {
-    if( $widget->id_base === 'media_gallery' ) {
-      static $id = 0;
-      $id++;
-      if( $id !== 1 ) {
-        $instance = false;
-      }
-    } else {
-      $instance = false;
     }
   }
   return $instance;
@@ -712,7 +699,7 @@ function yadoken_widgets_init() {
     array(
       'name' => __( 'Slider' ),
       'id' => 'slider',
-      'description' => __( 'ヘッダー部分にスライダーを表示します。ギャラリー１つのみを表示し他は設定しても表示しないのですが、リソースの無駄になってしまうためギャラリー１つのみ設定するようにしてください。設定項目のカラムは無効化されています。' ),
+      'description' => __( 'ヘッダー部分にスライダーを表示します。一番上のギャラリーのみが保存され、他は「使用停止中のウィジェット」となります。設定項目中の「カラム」は無効化されています。' ),
       'before_widget' => '<div class="widget_slider">',
       'after_widget' => '</div>',
       'before_title' => '<h2 class="slider-title"><span>',
@@ -745,6 +732,28 @@ function yadoken_widget_nav_menu_args( $nav_menu_args ) {
   $nav_menu_args['container'] = '';
   $nav_menu_args['items_wrap'] = '<ul>%3$s</ul>';
   return $nav_menu_args;
+}
+
+/**
+ * スライダーウィジェット登録数、種数制限
+ * 
+ * スライダーに登録できるウィジェットをギャラリー１つのみに制限しています。
+ * 
+ * @param array $value      更新する値
+ * @param array $old_value  更新前の値(不使用)
+ * @param string $option    optionテーブルの名前(sidebars_widgets・不使用)
+ * @return array  更新後の値
+ */
+add_filter( 'pre_update_option_sidebars_widgets', 'yadoken_sidebars_widgets' );
+function yadoken_sidebars_widgets( $value ) {
+  if( isset( $value['slider'] ) ) {
+    if( $widgets = preg_grep( '/media_gallery/', $value['slider'] ) ) {
+      $value['slider'] = array( reset( $widgets ) );
+    } else {
+      $value['slider'] = array();
+    }
+  }
+  return $value;
 }
 
 ?>
