@@ -81,6 +81,18 @@ function yadoken_allow_author_read_privates() {
 }
 
 /**
+ * 投稿者の固定ページ下書き作成許可
+ */
+if( current_user_can( 'author' ) && ( ! current_user_can( 'edit_pages' ) || ! current_user_can( 'delete_pages' ) ) ) {
+  add_action( 'admin_init', 'yadoken_allow_author_edit_and_delete_pages' );
+}
+function yadoken_allow_author_edit_and_delete_pages() {
+  $author = get_role( 'author' );
+  $author->add_cap( 'edit_pages' );
+  $author->add_cap( 'delete_pages' );
+}
+
+/**
  * 投稿者の公開記事を全て非公開記事にする。
  * 
  * フィルター名は{$new_status}_{$post->post_type}です。
