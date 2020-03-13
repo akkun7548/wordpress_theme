@@ -40,7 +40,7 @@
 </header>
 <main role="main">
 <?php
-if( is_active_sidebar( 'slider' ) ) {
-    dynamic_sidebar( 'slider' );
+if( is_active_sidebar( 'top' ) ) {
+    dynamic_sidebar( 'top' );
 }
 ?>

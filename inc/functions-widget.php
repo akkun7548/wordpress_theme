@@ -523,13 +523,15 @@ function yadoken_display_callback( $instance, $widget, $args ) {
 /**
  * ヘッダーウィジェット内のギャラリーを区別し、$instanceの中に識別子を追加する
  * 
+ * フィルターの名前は"widget_{$this->id_base}_instance"です。
+ * 
  * @param array           $instance  ウィジェットの設定値
  * @param array           $args      register_sidebar()に与えた配列
  * @param WP_Widget_Media $this      ウィジェットのインスタンス
  */
 add_filter( 'widget_media_gallery_instance', 'yadoken_media_gallery_instance', 10, 2 );
 function yadoken_media_gallery_instance( $instance, $args ) {
-  if( $args['id'] === 'slider' ) {
+  if( $args['id'] === 'top' ) {
     $instance['yadoken_slider_identifier'] = true;
   }
   return $instance;
@@ -633,16 +635,16 @@ function yadoken_post_gallery( $output, $attr ) {
           $image_output = '<a href=' . esc_url( get_attachment_link( $id ) ) . '><img data-lazy="' . esc_url( wp_get_attachment_image_src( $id, $atts['size'] )[0] ) . '"' . $aria_describedby .  '></a>';
       }
       $output .= "
-          <div class='slider-item'>
+          <figure class='slider-item'>
               $image_output";
       if ( trim( $attachment->post_excerpt ) ) {
           $output .= "
-              <div class='slider-caption'>
-                  <p id='slider-$id'>" . wp_kses_post( wptexturize( $attachment->post_excerpt ) ) . "</p>
-              </div>";
+              <figcaption id='slider-$id'>
+                  " . wp_kses_post( wptexturize( $attachment->post_excerpt ) ) . "
+              </figcaption>";
       }
       $output .= "
-          </div>";
+          </figure>";
   }
   $output .= "
       </div>\n";
@@ -655,13 +657,26 @@ function yadoken_post_gallery( $output, $attr ) {
       <div class='slider-nav'>";
   foreach ( $attachments as $id => $attachment ) {
       $output .= "
-          <div class='slider-item'>
+          <figure class='slider-item'>
               <img src='" . esc_url( wp_get_attachment_image_src( $id, 'medium' )[0] ) . "'>
-          </div>";
+          </figure>";
   }
   $output .= "
       </div>\n";
   return $output;
+}
+
+/**
+ * 「画像」ウィジェットのインラインスタイリング防止
+ * 
+ * @param int $width       画像の幅
+ * @param array $atts      img_caption_shortcode()の第一引数
+ * @param string $content  img_caption_shortcode()の出力
+ * @return string  画像の幅
+ */
+add_filter( 'img_caption_shortcode_width', 'yadoken_img_caption_shortcode_width' );
+function yadoken_img_caption_shortcode_width( $width ) {
+  return '';
 }
 
 /**
@@ -675,9 +690,9 @@ add_action( 'widgets_init', 'yadoken_widgets_init' );
 function yadoken_widgets_init() {
   register_sidebar(
     array(
-      'name' => __( 'Main Sidebar' ),
+      'name' => __( 'サイドバー' ),
       'id' => 'main-sidebar',
-      'description' => __( 'サイドバーに表示されるウィジェットエリアです。' ),
+      'description' => __( 'サイドバーのウィジェットエリアです。' ),
       'before_widget' => '<div class="widget_sidebar">',
       'after_widget'  => '</div>',
       'before_title'  => '<h2>',
@@ -686,9 +701,9 @@ function yadoken_widgets_init() {
   );
   register_sidebar(
     array(
-      'name' => __( 'Sticky Sidebar' ),
+      'name' => __( 'サイドバー(追従)' ),
       'id' => 'sticky-sidebar',
-      'description' => __( 'サイドバー下部のスクロールした際に付いてくる部分です。' ),
+      'description' => __( 'サイドバー下部のスクロールした際に追従してくるウィジェットエリアです。' ),
       'before_widget' => '<div class="widget_sidebar">',
       'after_widget' => '</div>',
       'before_title' => '<h2>',
@@ -697,13 +712,13 @@ function yadoken_widgets_init() {
   );
   register_sidebar(
     array(
-      'name' => __( 'Slider' ),
-      'id' => 'slider',
-      'description' => __( 'ヘッダー部分にスライダーを表示します。一番上のギャラリーのみが保存され、他は「使用停止中のウィジェット」となります。設定項目中の「カラム」は無効化されています。' ),
-      'before_widget' => '<div class="widget_slider">',
+      'name' => __( 'ページ上部' ),
+      'id' => 'top',
+      'description' => __( 'ページ上部のウィジェットエリアです。一番上の「ギャラリー」もしくは「画像」のみが保存され、他は「使用停止中のウィジェット」となります。ギャラリー設定項目中の「カラム」は無効化されています。' ),
+      'before_widget' => '<div class="widget_top">',
       'after_widget' => '</div>',
-      'before_title' => '<h2 class="slider-title"><span>',
-      'after_title' => '</span></h2>',
+      'before_title' => '<h2 class="title_top">',
+      'after_title' => '</h2>',
     )
   );
 }
@@ -746,11 +761,11 @@ function yadoken_widget_nav_menu_args( $nav_menu_args ) {
  */
 add_filter( 'pre_update_option_sidebars_widgets', 'yadoken_sidebars_widgets' );
 function yadoken_sidebars_widgets( $value ) {
-  if( isset( $value['slider'] ) ) {
-    if( $widgets = preg_grep( '/media_gallery/', $value['slider'] ) ) {
-      $value['slider'] = array( reset( $widgets ) );
+  if( isset( $value['top'] ) ) {
+    if( $widgets = preg_grep( '/media_gallery|media_image/', $value['top'] ) ) {
+      $value['top'] = array( reset( $widgets ) );
     } else {
-      $value['slider'] = array();
+      $value['top'] = array();
     }
   }
   return $value;

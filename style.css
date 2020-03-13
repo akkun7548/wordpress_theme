@@ -13,7 +13,7 @@ main {
     max-width: 1200px;
     margin-right: auto;
     margin-left: auto;
-    padding: 70px 15px 0;
+    padding: 80px 15px 0;
     min-height: 1000px;
 }
 /* sliderがある時mainに追加 */
@@ -112,40 +112,48 @@ main {
     background-color: rgba(0,0,0,0.55);
 }
 
-/* ================================= スライダー ================================= */
-.slider-title {
+/* ================================= ページ上部 ================================= */
+.widget_top {
     position: relative;
     text-align: center;
-    z-index: 100;
-    padding-top: 100px;
 }
-.slider-title span {
-    background-color: rgba(0,0,0,0.55);
+.widget_top > img,
+.widget_top > a img,
+.widget_top > figure {
+    margin-bottom: 15px;
+}
+.widget_top figcaption {
     color: white;
+    background-color: rgba(0,0,0,0.55);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 5px;
+    padding: 5px;
+}
+.title_top {
+    color: white;
+    background-color: rgba(0,0,0,0.55);
+    z-index: 100;
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
 }
 .slider-thumb {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
-.slider-thumb:nth-child(2) {
-    margin-top: -146px;
+.slider-thumb .slider-item {
+    margin-bottom: 0;
 }
 .slider-thumb img {
     margin-right: auto;
     margin-left: auto;
     height: 500px;
 }
-.slider-caption {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 5px;
-}
-.slider-caption p {
-    display: inline-block;
-    background-color: rgba(0,0,0,0.55);
-    margin-bottom: 0;
-    padding: 5px;
-    color: white;
+.slider-nav {
+    margin-bottom: 10px;
 }
 .slider-nav .slider-item {
     margin: 5px;
@@ -240,7 +248,7 @@ main {
 page.php, single-news.php, archive.php, archive-news.php, search.php 404.php home.php*/
 .title_common_1 {
     background-color: white;
-    margin: 20px 0 5px;
+    margin: 0 0 5px;
     padding-bottom: 13px;
     border: 1px solid #96664b;
     border-radius: 2px;
@@ -650,7 +658,7 @@ main {
 @media screen and (max-width:575.98px) {
 /* ***************全ページ共通*************** */
 main {
-    padding: 60px 0 0;
+    padding: 70px 0 0;
 }
 .content {
     padding: 0;

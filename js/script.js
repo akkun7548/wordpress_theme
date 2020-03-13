@@ -26,7 +26,7 @@ jQuery( function() {
  * slickスライダーとヘッダーが重複した時に透明にする。
  */
 jQuery( function() {
-    var height = jQuery('.widget_slider').height();
+    var height = jQuery('.widget_top:has([class^="slider-"])').height();
     if( height ) {
         var navbar = jQuery('.navbar');
         var dropdown_menu = jQuery('.dropdown-menu');
