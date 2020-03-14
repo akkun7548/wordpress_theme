@@ -455,4 +455,34 @@ function yadoken_archive_link( $html ) {
   return $html;
 }
 
+/**
+ * Gutenbergの「クラシック」から使用出来るTinyMCEエディタにテーブル編集機能を追加する。
+ * 
+ * 編集画面のソースからWordpressに同梱されているTinyMCEのバージョンを確認して、更新があった
+ * 場合は以下のサイトから適切なバージョンを探してcdnのリンクを更新しましょう。
+ * 
+ * https://cdnjs.com/libraries/tinymce/4.9.6
+ * 
+ * @param array $external_plugins  追加プラグインの配列
+ * @return array  追加プラグインの配列
+ */
+add_filter( 'mce_external_plugins', 'yadoken_mce_external_plugins_table' );
+function yadoken_mce_external_plugins_table( $plugins ) {
+  $plugins['table'] = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.6/plugins/table/plugin.min.js';
+  return $plugins;
+}
+
+/**
+ * TinyMCEエディタににテーブル編集用のボタンを追加します。
+ * 
+ * @param array $buttons     ボタンの要素の配列
+ * @param string $editor_id  エディタの識別子
+ * @return array  ボタンの要素の配列
+ */
+add_filter( 'mce_buttons', 'yadoken_mce_buttons_table' );
+function yadoken_mce_buttons_table( $buttons ) {
+  $buttons[] = 'table';
+  return $buttons;
+}
+
 ?>

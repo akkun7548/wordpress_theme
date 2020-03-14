@@ -45,6 +45,18 @@ main {
 .wp-block-image img {
     height: auto;
 }
+dl.update_info {
+    padding: 10px;
+}
+dl.update_info dt {
+    float: left;
+    width: 7em;
+    margin-bottom: 10px;
+}
+dl.update_info dd {
+    margin-left: 7em;
+    margin-bottom: 10px;
+}
 /* 参照：https://make.wordpress.org/accessibility/handbook/markup/the-css-class-screen-reader-text/ */
 /* Text meant only for screen readers. */
 .screen-reader-text {
@@ -272,13 +284,9 @@ page.php, single-news.php, archive.php, archive-news.php, search.php 404.php hom
     margin-bottom: 0;
     padding: 5px;
 }
-.common_1 > h2:first-child {
-    margin: 0 0 15px;
-}
 .common_1 > h2 {
     font-size: 1.4rem;
     color: #441e08;
-    margin: 25px 0 15px;
     padding: 7px;
     border-top: 2px solid #441e08;
     border-right: 2px solid #441e08;
@@ -289,24 +297,52 @@ page.php, single-news.php, archive.php, archive-news.php, search.php 404.php hom
 .common_1 > h3 {
     font-size: 1.2rem;
     color: #441e08;
-    margin: 5px 0;
     padding: 7px 5px;
     border-bottom: 2px solid black;
 }
 .common_1 > h4 {
     font-size: 1.1rem;
     color: #441e08;
-    margin: 20px 5px 10px;
+    margin-left: 5px;
     padding-left: 7px;
     border-left: 2px solid #441e08;
 }
 .common_1 > p {
-    font-size: 1rem;
     line-height: 1.65rem;
     padding: 10px;
 }
-.common_1 li {
-    padding: 10px 0;
+.common_1 > ul {
+    margin-left: 10px;
+    padding-left: 0;
+}
+.common_1 > ul li {
+    list-style: none;
+    padding-left: 12px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-left: 6px double #441e08;
+}
+.common_1 > ol {
+    padding-inline-start: 26px;
+}
+.common_1 > ol > li {
+    margin-top: 13px;
+    margin-bottom: 13px;
+}
+.common_1 > table {
+    margin-bottom: 1.5rem;
+}
+.common_1 > table.alignleft {
+    text-align: left;
+}
+.common_1 > table.aligncenter {
+    text-align: center;
+}
+.common_1 > table.alignright {
+    text-align: right;
+}
+.common_1 > table.alignnone {
+    text-align: none;
 }
 
 
@@ -550,76 +586,6 @@ a.list:hover {
 }
 
 
-/* ================================== <個別ページ> ================================== */
-/* ================================== トップページ ================================== */
-.home > figure {
-    padding: 10px 10px 0 10px;
-}
-.home > figure figcaption {
-    text-align: center;
-}
-.home > dl {
-    padding-left: 10px;
-}
-.home > dl dt {
-    float: left;
-    width: 8em;
-    margin-bottom: 10px;
-}
-.home > dl dd {
-    margin-left: 8em;
-    margin-bottom: 10px;
-}
-
-/* ================================= リンク集ページ ================================= */
-.links ul {
-    padding: 0;
-    margin-left: 10px;
-}
-.links ul li {
-    list-style: none;
-    padding: 4px 0 6px 12px;
-    margin: 15px 0;
-    border-left: 6px double #441e08;
-}
-
-/* ============================== 2019年度新歓ページ ============================== */
-/*お知らせ個別ページ作成にあたってcssを追加する時は、これと同様にページ名を明記してからこの下に続けて書いてください。*/
-.shinkan2019 table {
-    width: 100%;
-    padding: 10px 15px;
-    text-align: center;
-    border: solid 1px black;
-}
-.shinkan2019 th {
-    border-top: solid 1px black;
-    border-right: solid 1px black;
-}
-.shinkan2019 th.hol {
-    background-color: rgb(255, 214, 138);
-}
-.shinkan2019 th:nth-child(1),
-.shinkan2019 th:nth-child(7) {
-    background-color: rgb(255, 214, 138);
-}
-.shinkan2019 th:nth-child(1),
-.shinkan2019 th:nth-child(4),
-.shinkan2019 th:nth-child(7) {
-    width: 20%;
-}
-.shinkan2019 th:nth-child(2),
-.shinkan2019 th:nth-child(3),
-.shinkan2019 th:nth-child(5),
-.shinkan2019 th:nth-child(6) {
-    width: 10%;
-}
-.shinkan2019 td {
-    border-right: solid 1px black;
-    border-top: dotted 1px black;
-    height: 70px;
-}
-
-
 /* ============================== <レスポンシブ対応> ============================== */
 /* ===================== 大デバイス(デスクトップ, 992px 以上) ===================== */
 @media screen and (min-width:992px) {
@@ -667,7 +633,7 @@ main {
     height: 35px;
 }
 /* 576px未満で画像の幅を100%にします。 */
-.sp100 {
+.sp100 img {
     width: 100%;
 }
 .slider-thumb img {
@@ -680,6 +646,9 @@ main {
 /* ******************共通1****************** */
 .common_1 > p {
     padding: 5px;
+}
+.common_1 > table {
+    font-size: 0.8rem;
 }
 
 /* ***************single-post.php*************** */
@@ -707,14 +676,6 @@ a.summary {
 }
 :nth-child(even).stripe .page-numbers {
     background-color: #f5f1e9;
-}
-
-/* *******************個別ページ******************* */
-.home > figure {
-    padding: 5px 5px 0 5px;
-}
-.shinkan2019 table {
-    font-size: 0.8rem;
 }
 
 }

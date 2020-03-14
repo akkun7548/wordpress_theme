@@ -41,7 +41,7 @@ elseif( $wp_query->post_count === 1 ) :
     <p>更新日 <?php the_modified_date( 'Y年n月j日' ); ?></p>
 </div>
 <div class="row d-lg-flex flex-row-reverse wrapper">
-    <div <?php post_class( 'col-lg-8 content common_1 ' . esc_attr( $post->post_name ) ); ?>>
+    <div <?php post_class( 'col-lg-8 content common_1' ); ?>>
         <?php the_content(); ?>
     </div>
     <aside class="col-lg-4 align-self-lg-stretch sidebar">
