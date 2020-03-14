@@ -15,7 +15,7 @@ function yadoken_setup() {
   add_theme_support( 'automatic-feed-links' );
   add_theme_support( 'post-thumbnails' );
   add_theme_support( 'wp-block-styles' );
-  add_theme_support( 'html5', array( 'caption' ) );
+  add_theme_support( 'html5', array( 'gallery', 'caption' ) );
   register_nav_menus( array(
     'header-nav' => __( 'ヘッダーメニュー' ),
     'footer-nav' => __( 'フッターメニュー' ),

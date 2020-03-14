@@ -219,6 +219,40 @@ dl.update_info dd {
     display: block;
     width: 100%;
 }
+.widget_sidebar .gallery {
+    display: flex;
+    flex-wrap: wrap;
+}
+.widget_sidebar .gallery-columns-1 .gallery-item {
+    flex: 0 0 100%;
+}
+.widget_sidebar .gallery-columns-2 .gallery-item {
+    flex: 0 0 50%;
+}
+.widget_sidebar .gallery-columns-3 .gallery-item {
+    flex: 0 0 33.333333%;
+}
+.widget_sidebar .gallery-columns-4 .gallery-item {
+    flex: 0 0 25%;
+}
+.widget_sidebar .gallery-columns-5 .gallery-item {
+    flex: 0 0 20%;
+}
+.widget_sidebar .gallery-columns-6 .gallery-item {
+    flex: 0 0 16.666667%;
+}
+.widget_sidebar .gallery-columns-7 .gallery-item {
+    flex: 0 0 14.285714%;
+}
+.widget_sidebar .gallery-columns-8 .gallery-item {
+    flex: 0 0 12.5%;
+}
+.widget_sidebar .gallery-columns-9 .gallery-item {
+    flex: 0 0 11.111111%;
+}
+.widget_sidebar figcaption.gallery-caption {
+    text-align: center;
+}
 .widget_sidebar .gallery img {
     max-width: 100%;
     height: auto;
