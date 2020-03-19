@@ -420,12 +420,16 @@ function yadoken_widget_form( $widget, $return, $instance ) {
   <label for="<?php echo $widget->get_field_id( 'all_display' ); ?>"><?php _e( '全ページで表示' ) ?></label></p>
   <?php
   if( ! $all_display ) {
-    $pages = get_pages();
+    $args = array( 'post_status' => 'publish,pending,private' );
+    $pages = get_pages( $args );
     if( $pages ) {
       //管理画面にはstyle.cssが読み込まれないため、属性値としてスタイリングしました。 ?>
       <p style="font-size: 1.1rem; margin: 5px 0;"><?php _e( '固定ページ' ) ?></p>
       <p style="border: 2px solid #eeeeee; border-radius: 3px; padding: 5px; margin: -2px -2px 9px -2px;"><?php
       foreach( (array) $pages as $page ) {
+        if( $page->ID === (int) get_option( 'page_for_posts' ) ) {
+          continue;
+        }
         $key = $page->post_name;
         $page_display[$key] = ( isset( $instance['page_display'] ) && in_array( $key, $instance['page_display'], true ) ) ? true : false;
         ?>
@@ -714,7 +718,7 @@ function yadoken_widgets_init() {
     array(
       'name' => __( 'ページ上部' ),
       'id' => 'top',
-      'description' => __( 'ページ上部のウィジェットエリアです。一番上の「ギャラリー」もしくは「画像」のみが保存され、他は「使用停止中のウィジェット」となります。ギャラリー設定項目中の「カラム」は無効化されています。' ),
+      'description' => __( 'ページ上部のウィジェットエリアです。「ギャラリー」もしくは「画像」のみが保存され、他は「使用停止中のウィジェット」となり保存できないように設定してあります。ギャラリー設定項目中の「カラム」は無効化されています。' ),
       'before_widget' => '<div class="widget_top">',
       'after_widget' => '</div>',
       'before_title' => '<h2 class="title_top">',
@@ -752,7 +756,7 @@ function yadoken_widget_nav_menu_args( $nav_menu_args ) {
 /**
  * スライダーウィジェット登録数、種数制限
  * 
- * スライダーに登録できるウィジェットをギャラリー１つのみに制限しています。
+ * スライダーに登録できるウィジェットをギャラリーもしくは画像のみとしています。
  * 
  * @param array $value      更新する値
  * @param array $old_value  更新前の値(不使用)
@@ -762,11 +766,8 @@ function yadoken_widget_nav_menu_args( $nav_menu_args ) {
 add_filter( 'pre_update_option_sidebars_widgets', 'yadoken_sidebars_widgets' );
 function yadoken_sidebars_widgets( $value ) {
   if( isset( $value['top'] ) ) {
-    if( $widgets = preg_grep( '/media_gallery|media_image/', $value['top'] ) ) {
-      $value['top'] = array( reset( $widgets ) );
-    } else {
-      $value['top'] = array();
-    }
+    //ウィジェットのbase_nameを利用して判別しています。
+    $value['top'] = preg_grep( '/media_gallery|media_image/', $value['top'] );
   }
   return $value;
 }
