@@ -12,7 +12,7 @@ if( have_posts() ) :
             <h1><?php the_title(); ?></h1>
             <div class="row justify-content-end info_post">
                 <?php the_tags('<p>タグ ',', ','</p>'); ?>
-                <p>投稿日 <?php yadoken_date_link(); ?></p>
+                <p>投稿日 <?php yadoken_date_link( false ); ?></p>
                 <p>更新日 <?php the_modified_date( 'Y年n月j日' ); ?></p>
             </div>
             <?php the_content(); ?>

@@ -3,7 +3,7 @@
  * 通常投稿(post)や複数の投稿タイプがクエリされた著者アーカイブやカテゴリー、タグアーカイブ、
  * 日付アーカイブはこのファイルを用いて表示されます。
  */
-$name = yadoken_post_type_name( yadoken_post_type(), false, ' & ' );
+$name = yadoken_post_type_name( yadoken_post_type(), ' & ' );
 get_header();
 ?>
 <div class="title_common_1">

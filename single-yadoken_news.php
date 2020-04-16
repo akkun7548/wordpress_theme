@@ -6,12 +6,12 @@ $args = array(
     'posts_per_page' => 1,
     'orderby' => 'date',
     'order' => 'DESC',
-    'post_type' => 'news',
+    'post_type' => 'yadoken_news',
     'no_found_rows' => true,
 );
 $r = new WP_Query( $args );
 if( $r->posts[0]->ID === get_the_ID() ) {
-    wp_safe_redirect( get_post_type_archive_link( 'news' ) );
+    wp_safe_redirect( get_post_type_archive_link( 'yadoken_news' ) );
     exit;
 }
 get_header();

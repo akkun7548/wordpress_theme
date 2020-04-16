@@ -3,6 +3,7 @@
  * このファイルはソートするためのプルダウンメニューを出力するのに使用されます。
  * ソートはGETでパラメーターを送信することにより行っています。
  */
+
 /**
  * ページネーションと同様に個別ページではサブループが存在しない場合はソート対象、記事件数が
  * ないため何も出力しません。
@@ -12,9 +13,8 @@ if( is_singular() ) {
     global $yadoken_query;
     if( empty( $yadoken_query ) ) {
         return;
-    } else {
-        $post_count = '表示件数：' . $yadoken_query->post_count . '件';
     }
+    $post_count = '表示件数：' . $yadoken_query->post_count . '件';
 } else {
     $post_count = '表示件数：' . $wp_query->post_count . '件';
 }

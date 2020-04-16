@@ -7,7 +7,7 @@
  */
 get_header();
 if( is_date() || is_author() || $wp_query->post_count > 1 ) :
-    $name = yadoken_post_type_name( 'news', false );
+    $name = yadoken_post_type_name( 'yadoken_news' );
     ?>
 <div class="title_common_1">
     <h1><?php yadoken_archive_title( $name ); ?></h1>
@@ -57,7 +57,7 @@ elseif( $wp_query->post_count === 1 ) :
         <?php
     endwhile;
 else :
-    $name = yadoken_post_type_name( 'news', false );
+    $name = yadoken_post_type_name( 'yadoken_news' );
     ?>
 <div class="title_common_1">
     <h1><?php echo esc_html( $name ); ?></h1>

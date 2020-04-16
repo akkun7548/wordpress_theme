@@ -3,13 +3,12 @@
  * このファイルはデフォルト投稿タイプのpostの投稿一覧を表示するために使用されます。
  * 設定 > 表示設定 > ホームページの設定 のラジオボタンで固定ページを選択しつつ、
  * 投稿ページの方で選択したページはこのファイルを元に表示されます。
+ * また、最新の投稿を選択した場合も同様です。
  */
-$post_type = yadoken_post_type();
-$name = yadoken_post_type_name( $post_type, false, ' & ' );
-if( $post_type === 'post' && ( $obj = get_queried_object() ) instanceof WP_Post ) {
+if( ( $obj = get_queried_object() ) instanceof WP_Post ) {
     $title = $obj->post_title;
 } else {
-    $title = $name . '一覧';
+    $title = yadoken_post_type_name( yadoken_post_type(), ' & ' );
 }
 get_header();
 ?>
@@ -28,7 +27,7 @@ get_header();
             endwhile;
             echo do_shortcode( '[pagination]' );
         else: ?>
-            <p><?php echo esc_html( $name ); ?>はありません。</p>
+            <p><?php echo esc_html( yadoken_post_type_name( yadoken_post_type(), '、' ) ); ?>はありません。</p>
         <?php
         endif; ?>
     </div>

@@ -2,6 +2,7 @@
 /*
 Theme Name: yadoken
 Description: 筑波大学野生動物研究会のオリジナルテーマです。
+Version: 1.2.0
 */
 
 /* ================================== <全ページ共通> ================================== */
@@ -291,7 +292,7 @@ dl.update_info dd {
 
 /* ================================ <共通1 (common_1)> ================================ */
 /* 以下のページに対しての共通スタイリングです。
-page.php, single-news.php, archive.php, archive-news.php, search.php 404.php home.php*/
+page.php, single-yadoken_news.php, archive.php, archive-news.php, search.php 404.php home.php*/
 .title_common_1 {
     background-color: white;
     margin: 0 0 5px;
@@ -430,38 +431,38 @@ page.php, single-news.php, archive.php, archive-news.php, search.php 404.php hom
     padding: 10px;
 }
 
-/* ============================= <single-minutes.php> ============================= */
-.type-minutes {
+/* ============================= <single-yadoken_minutes.php> ============================= */
+.type-yadoken_minutes {
     background-color: white;
     margin-bottom: 20px;
     padding: 15px;
     border: 1px solid rgb(235, 235, 235);
     word-wrap: break-word;
 }
-.type-minutes h1 {
+.type-yadoken_minutes h1 {
     font-size: 1.6rem;
     margin-bottom: 0;
     padding: 7px 7px 12px;
     border-bottom: 2px solid #dad4cc;
 }
-.type-minutes > h2 {
+.type-yadoken_minutes > h2 {
     font-size: 1.4rem;
     margin: 15px 0;
     padding: 6px 5px;
     border-bottom: 2px solid #dad4cc;
 }
-.type-minutes > h3 {
+.type-yadoken_minutes > h3 {
     font-size: 1.2rem;
     margin: 15px 0;
     padding: 6px 5px;
     border-bottom: 2px solid #dad4cc;
 }
-.type-minutes > h4 {
+.type-yadoken_minutes > h4 {
     font-size: 1.1rem;
     margin: 15px 0;
     padding: 6px 5px;
 }
-.type-minutes h1 + p {
+.type-yadoken_minutes h1 + p {
     padding-top: 15px;
 }
 

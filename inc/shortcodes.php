@@ -8,12 +8,26 @@
 /**
  * クエリ生成
  * 
+ * このショートコードは記事を取得するだけで、何も出力しません。
+ * このショートコードの下に取得した記事の情報を利用するショートコードを記述することで
+ * 使用します。
+ * 
  * GETによる条件の指定でクエリ変数が上書きされるため、その値を用いてソートするかを
  * 引数で決めることができます。
  * 
  * 複数のソート対象を判別する機能は未実装のため、ソート有効のサブループ全てがソート対象になります。
  * 
- * @param array $atts ショートコードの引数
+ * 投稿ステータスの指定を廃止しました。
+ * 
+ * @param array $atts {
+ *   ショートコードの引数
+ *   @type string|int $posts_per_page  １ページ当たりの表示記事数
+ *   @type string     $orderby         何を使って並べるか
+ *   @type string     $order           降順/昇順
+ *   @type string     $post_type       投稿タイプ
+ *   @type string|int $paged           現在のページ
+ *   @type bool       $sort            ソート有効/無効
+ * }
  */
 add_shortcode( 'query', 'yadoken_query_shortcode' );
 function yadoken_query_shortcode( $atts ) {
@@ -23,29 +37,53 @@ function yadoken_query_shortcode( $atts ) {
     'orderby' => 'date',
     'order' => 'DESC',
     'post_type' => 'post',
-    'post_status' => 'publish',
     'paged' => get_query_var( 'paged', 1 ),
+    /**sortmenuによるソートをするかについての設定を追加 */
+    'sort' => false
   );
-  //sortmenuによるソートをするかについての設定
-  $add = array( 'sort' => false );
-  $atts = shortcode_atts(
-    //shortcode_atts()の引数に一つの配列として渡すため結合しています。
-    array_merge( $args, $add ),
-    $atts,
-    'query'
-  );
-  //ソート対象のパラメーター
-  if( $atts['sort'] ) {
-    $atts['orderby'] = get_query_var( 'orderby', 'date' );
-    $atts['order'] = get_query_var( 'order', 'DESC' );
+  extract( shortcode_atts( $args, $atts, 'query' ) );
+  /**ソート対象のパラメーター */
+  if( $sort ) {
+    $orderby = get_query_var( 'orderby', 'date' );
+    $order = get_query_var( 'order', 'DESC' );
   }
-  //未ログインのアクセスに対して公開記事以外がクエリされるのを防止しています。
-  if( $atts['post_status'] !== 'publish' && ! is_user_logged_in() ) {
-    $atts['post_status'] = 'publish';
-  }
-  //WP_Queryに対して有効なクエリ変数に限定するために配列を分けています。
-  $input = array_diff( $atts, $add );
+  /**WP_Queryに対して有効なクエリ変数に限定して配列化しています。 */
+  $input = compact( 'posts_per_page', 'orderby', 'order', 'post_type', 'paged' );
   $yadoken_query = new WP_Query( $input );
+}
+
+/**
+ * 検索フォーム出力
+ * 
+ * 検索フォームを出力します。
+ * ショートコードは値をreturnする必要があるのですが、get_search_form()ではその場で出力して
+ * しまうため、バッファリングに出力させて得られた値を返しています。
+ * 
+ * 引数を削除しました。
+ * 
+ * @return string  出力するHTML
+ */
+add_shortcode( 'searchform', 'yadoken_searchform_shortcode' );
+function yadoken_searchform_shortcode() {
+  ob_start();
+  get_search_form();
+  return ob_get_clean();
+}
+
+/**
+ * ソートメニュー出力
+ * 
+ * ソートを有効にしているサブループの投稿を並べ替えるフォームを出力します。
+ * ショートコードは値をreturnする必要があるのですが、get_template_part()ではその場で出力して
+ * しまうため、バッファリングに出力させて得られた値を返しています。
+ * 
+ * @return string  出力するHTML
+ */
+add_shortcode( 'sortmenu', 'yadoken_sortmenu_shortcode' );
+function yadoken_sortmenu_shortcode() {
+  ob_start();
+  get_template_part( 'template-parts/sortmenu' );
+  return ob_get_clean();
 }
 
 /**
@@ -56,29 +94,29 @@ function yadoken_query_shortcode( $atts ) {
  * 
  * 'links'を削除しました。
  * 
- * @param array $atts ショートコードの引数
+ * @param array $atts {
+ *   ショートコードの引数
+ *   @type string $format  出力形式
+ * }
  * @return string  出力するHTML
  */
 add_shortcode( 'loop', 'yadoken_loop_shortcode' );
 function yadoken_loop_shortcode( $atts ) {
   global $yadoken_query;
+  /**表示する情報が存在しない場合 */
   if( empty( $yadoken_query ) ) {
     return;
   }
   //出力するHTML
   $str = '';
-  $atts = shortcode_atts(
-    //取得した記事の表示方法
-    array( '' ),
-    $atts,
-    'loop'
-  );
+  /**初期値では、yadoken_display_post()により出力するようにしています。 */
+  extract( shortcode_atts( array( 'format' => '' ), $atts, 'loop' ) );
   if( $yadoken_query->have_posts() ) {
     //バッファリングに出力しています。
     ob_start();
     while( $yadoken_query->have_posts() ) {
       $yadoken_query->the_post();
-      switch( $atts[0] ) {
+      switch( $format ) {
         case 'summary':
           get_template_part( 'template-parts/summary' );
           break;
@@ -100,9 +138,9 @@ function yadoken_loop_shortcode( $atts ) {
     wp_reset_postdata(); 
   } else {
     //投稿タイプネームラベルを取得しています。
-    $name = ( $obj = get_post_type_object( $yadoken_query->get( 'post_type' ) ) ) ? $obj->labels->name : '記事';
+    $name = yadoken_post_type_name( $yadoken_query->get( 'post_type' ) );
     //表示形式毎に、記事がなかった場合の出力を設定しています。
-    switch( $atts[0] ) {
+    switch( $format ) {
       case 'summary':
       case 'title':
       case 'list':
@@ -133,10 +171,10 @@ function yadoken_pagination_shortcode() {
     global $yadoken_query;
     if( empty( $yadoken_query ) ) {
       return;
-    } else {
-      $query = $yadoken_query;
-      $base = get_permalink();
     }
+    $query = $yadoken_query;
+    $base = get_permalink() . '%_%';
+    $format = strpos( $base, '?' ) === false ? '?paged=%#%' : '&paged=%#%';
   /**
    * 個別ページ以外の全ページ(アーカイブページや検索結果ページなど)、メインループが複数記事を
    * クエリする場合はwp_queryからページネーションを生成しています。
@@ -144,19 +182,21 @@ function yadoken_pagination_shortcode() {
   } else {
     global $wp_query;
     $query = $wp_query;
-    $base = get_pagenum_link( 1 );
+    $big = 999999999;
+    $base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
+    $format = '?paged=%#%';
   }
   $str = '';
   /**
    * ページ数が2以上になる時に出力するようにしています。
    * また、ページネーションを作成するために使用されるベースのURLは、個別ページの場合は
-   * get_permalink()、その他はget_pagenum_link( 1 )で取得しています。
+   * get_permalink()、その他はget_pagenum_link()で取得しています。
    */
   if ( $query->max_num_pages > 1 ) {
     $str .= '<div class="row justify-content-center pagination stripe">' . "\n";
     $str .= paginate_links( array(
-      'base' => $base . '%_%',
-      'format' => '/page/%#%',
+      'base' => $base,
+      'format' => $format,
       'current' => max( 1, get_query_var( 'paged', 1 ) ),
       'total' => $query->max_num_pages,
     ));
@@ -166,104 +206,71 @@ function yadoken_pagination_shortcode() {
 }
 
 /**
- * 検索フォーム出力
- * 
- * 検索フォームを出力します。
- * この時、検索フォームで使用したい変数を引数として与えることができます。
- * ショートコードは値をreturnする必要があるのですが、get_search_form()ではその場で出力して
- * しまうため、バッファリングに出力させて得られた値を返しています。
- * 
- * @param array $atts ショートコードの引数
- * @return string  出力するHTML
- */
-add_shortcode( 'searchform', 'yadoken_searchform_shortcode' );
-function yadoken_searchform_shortcode( $atts ) {
-  global $yadoken_searchform;
-  $atts = shortcode_atts(
-    array(
-      'post_type' => '',
-    ),
-    $atts,
-    'searchform'
-  );
-  $yadoken_searchform = $atts;
-  ob_start();
-  get_search_form();
-  return ob_get_clean();
-}
-
-/**
- * ソートメニュー出力
- * 
- * ソートを有効にしているサブループの投稿を並べ替えるフォームを出力します。
- * ショートコードは値をreturnする必要があるのですが、get_template_part()ではその場で出力して
- * しまうため、バッファリングに出力させて得られた値を返しています。
- * 
- * @return string  出力するHTML
- */
-add_shortcode( 'sortmenu', 'yadoken_sortmenu_shortcode' );
-function yadoken_sortmenu_shortcode() {
-  ob_start();
-  get_template_part( 'template-parts/sortmenu' );
-  return ob_get_clean();
-}
-
-/**
  * サイト内リンク出力
  * 
  * 単純なhome_url()のラッパーです。
  * 
- * @param array $atts ショートコードの引数
+ * @param array $atts {
+ *   ショートコードの引数
+ *   @type string $path  リンクのパス
+ * }
  * @return string  得られたURL
  */
 add_shortcode( 'url', 'yadoken_url_shortcode' );
 function yadoken_url_shortcode( $atts ) {
-  $atts = shortcode_atts(
-    array( '' ),
-    $atts,
-    'url'
-  );
-  return esc_url( home_url( $atts[0] ) );
+  extract( shortcode_atts( array( 'path' => '' ), $atts, 'url' ) );
+  return esc_url( home_url( $path ) );
 }
 
 /**
  * 記事内メニュー出力
  * 
  * メニューを出力するためのショートコードです。
- * 外観 > メニュー からメニューの位置として選択できます。
- * 但し、ショートコードとしていくつ設定しても単一のメニューしか表示できません。
+ * 外観 > メニュー > メニュー名 をショートコードの引数として指定することで、該当するメニュー
+ * を表示することができます。
  * 
+ * @param array $atts {
+ *   ショートコードの引数
+ *   @type string $menu  メニューの名前
+ * }
  * @return string  出力するHTML
  */
 add_shortcode( 'menu', 'yadoken_menu_shortcode' );
-function yadoken_menu_shortcode() {
+function yadoken_menu_shortcode( $atts ) {
+  extract( shortcode_atts( array( 'menu' => '' ), $atts, 'menu' ) );
   $args = array(
-    'theme_location' => 'content',
+    'menu' => $menu,
     'container' => '',
-    'items_wrap' => '%3$s',
-    'echo' => false
+    'fallback_cb' => false,
+    'echo' => false,
+    'theme_location' => '__no_such_location',
+    'items_wrap' => '%3$s'
   );
   return wp_nav_menu( $args );
 }
 
 /**
- * functions.phpから変数を引き渡す
+ * metadata.phpから変数を引き渡す
  * 
- * このファイルからショートコード実行箇所に変数を送ることができます。
+ * metadata.phpで取得した当該ページの情報をショートコードから出力することができます。
  * 事前にエスケープなどの処理を済ませておいた変数を入れてください。
  * 
- * @param array $atts ショートコードの引数
- * @return string  出力する値(事前にエスケープされたもの)
+ * @param array $atts {
+ *   ショートコードの引数
+ *   @type string $key  ページ情報の配列のキー
+ * }
+ * @return string  出力する値(事前にエスケープされたもの)/存在しない場合は空配列
  */
 add_shortcode( 'pageinfo', 'yadoken_pageinfo_shortcode' );
 function yadoken_pageinfo_shortcode( $atts ) {
-  $atts = shortcode_atts(
-    array( 'enc_url' ),
-    $atts,
-    'pageinfo'
-  );
+  /**参照：inc/metadata.php yadoken_head() */
   global $yadoken_pageinfo;
-  return $yadoken_pageinfo[$atts[0]];
+  extract( shortcode_atts( array( 'key' => '' ), $atts, 'pageinfo' ) );
+  if( isset( $yadoken_pageinfo[$key] ) ) {
+    return $yadoken_pageinfo[$key];
+  } else {
+    return '';
+  }
 }
 
 ?>

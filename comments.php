@@ -21,13 +21,13 @@ endif;
 $commenter = wp_get_current_commenter();
 $req = get_option( 'require_name_email' );
 $aria_req = ( $req ? " aria-required='true' required" : '' );
-$required_text = __( '* が付いている欄は必須項目です。' );
+$required_text = '* が付いている欄は必須項目です。';
 $args = array(
     'id_form' => 'commentform',
     'id_submit' => 'submit',
-    'title_reply' => __( 'コメントを残す' ),
-    'title_reply_to' => __( '%sにコメントを残す' ),
-    'cancel_reply_link' => __( 'コメントをキャンセルする' ),
+    'title_reply' => 'コメントを残す',
+    'title_reply_to' => '%sにコメントを残す',
+    'cancel_reply_link' => 'コメントをキャンセルする',
     'label_submit' => '送信',
     'comment_field' =>
         '<p class="comment-form-comment">' . "\n" .
@@ -36,14 +36,14 @@ $args = array(
     'must_log_in' =>
         '<p class="must-log-in">' . "\n" .
         sprintf(
-            __( 'コメントを投稿するにはログインしてください。' ),
+            'コメントを投稿するにはログインしてください。',
             wp_login_url( apply_filters( 'the_permalink', get_permalink() ) )
         ) . "\n" .
         '</p>',
     'logged_in_as' =>
         '<p class="logged-in-as">' . "\n" .
         sprintf(
-            __( '<a href="%1$s">%2$s</a>さんとしてログイン中です。<a href="%3$s" title="ログアウト">ログアウト</a>しますか？' ),
+            '<a href="%1$s">%2$s</a>さんとしてログイン中です。<a href="%3$s" title="ログアウト">ログアウト</a>しますか？',
             admin_url( 'profile.php' ),
             $user_identity,
             wp_logout_url( apply_filters( 'the_permalink', get_permalink( ) ) )
@@ -51,9 +51,9 @@ $args = array(
         '</p>',
     'comment_notes_before' =>
         '<p class="comment-notes">' .
-        __( 'メールアドレスが公開されることはありません。' ) . ( $req ? $required_text : '' ) .
+        'メールアドレスが公開されることはありません。' . ( $req ? $required_text : '' ) .
         '</p>',
-    'comment_notes_after'  => '<p>' . __( '内容を確認してから送信してください。' ) . '</p>',
+    'comment_notes_after'  => '<p>' . '内容を確認してから送信してください。' . '</p>',
     'fields' => apply_filters(
         'comment_form_default_fields',
         array(

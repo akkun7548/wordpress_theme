@@ -7,7 +7,7 @@
 if ( has_post_thumbnail() ) {
     $thumb = get_the_post_thumbnail();
 } else {
-    $thumb = '<img src="' . esc_url( yadoken_first_image( false ) ) . '" alt="' . esc_attr( get_the_title() ) . '">';
+    $thumb = '<img src="' . esc_url( yadoken_first_image() ) . '" alt="' . esc_attr( get_the_title() ) . '">';
 }
 ?>
 <a href="<?php the_permalink(); ?>" class="row d-sm-flex summary stripe">

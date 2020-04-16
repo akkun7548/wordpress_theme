@@ -20,7 +20,7 @@ get_header();
             endwhile;
             echo do_shortcode( '[pagination]' );
         else : ?>
-            <p>該当する<?php yadoken_post_type_name( yadoken_post_type(), true, '、' ); ?>はありません。</p>
+            <p>該当する<?php echo yadoken_post_type_name( yadoken_post_type(), '、' ); ?>はありません。</p>
             <?php
         endif; ?>
     </div>

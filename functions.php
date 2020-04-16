@@ -4,7 +4,7 @@
  * 変更する役割を持っています。
  * また、このテーマが有効である限り全てのページで読み込まれるため、全体を通して使う関数や設定
  * などもこちらで行います。
- * 関数名の重複を防ぐため、基本的に全ての関数に接頭辞"yd"を付加しています。
+ * 関数名の重複を防ぐため、基本的に全ての関数に接頭辞"yadoken"を付加しています。
  * 
  * wordpressにはhookという仕組みがあり、テーマファイル内で定義した関数をコールバックとして
  * add_filter()やadd_action()というwordpress関数で登録することで、wordpressコアファイルの
@@ -27,41 +27,41 @@ $dir = get_template_directory();
  * 
  * 他のfunctions系ファイルでも使用している関数の定義があるため、最初にインクルードしてください。
  */
-require $dir . '/inc/functions-yadoken.php';
+require $dir . '/inc/definitions.php';
 
 /**
  * wordpress設定
  * 
  * wordpressの動作をカスタマイズする関数をまとめたファイル
  */
-require $dir . '/inc/functions-customize.php';
+require $dir . '/inc/settings.php';
 
 /**
  * ユーザー設定
  * 
  * ユーザー関係の設定をまとめたファイル
  */
-require $dir . '/inc/functions-user.php';
+require $dir . '/inc/users.php';
 
 /**
  * head内のタグ制御
  * 
  * headタグ内、footerの下のスクリプトタグを出力する関数のファイル
  */
-require $dir . '/inc/functions-head.php';
+require $dir . '/inc/metadata.php';
 
 /**
  * ウィジェット関係
  * 
  * ウィジェット関係のクラスやフィルターをまとめたファイル
  */
-require $dir . '/inc/functions-widget.php';
+require $dir . '/inc/widgets.php';
 
 /**
  * ショートコード
  * 
  * ショートコード関係の関数をまとめたファイル
  */
-require $dir . '/inc/functions-shortcode.php';
+require $dir . '/inc/shortcodes.php';
 
 ?>
