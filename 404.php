@@ -8,6 +8,7 @@ get_header();
 <div class="title_common_1">
     <h1>404エラー</h1>
 </div>
+<?php get_template_part( 'template-parts/breadcrumb' ); ?>
 <div class="row d-lg-flex flex-row-reverse wrapper">
     <div class="col-lg-8 content common_1">
         <p>ご指定されたページは見つかりませんでした。</p>

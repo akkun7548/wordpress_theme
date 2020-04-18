@@ -12,6 +12,7 @@ if( is_date() || is_author() || $wp_query->post_count > 1 ) :
 <div class="title_common_1">
     <h1><?php yadoken_archive_title( $name ); ?></h1>
 </div>
+<?php get_template_part( 'template-parts/breadcrumb' ); ?>
 <div class="row d-lg-flex flex-row-reverse wrapper">
     <div class="col-lg-8 content common_1">
         <?php
@@ -40,6 +41,7 @@ elseif( $wp_query->post_count === 1 ) :
 <div class="title_common_1">
     <h1><?php the_title(); ?></h1>
 </div>
+<?php get_template_part( 'template-parts/breadcrumb' ); ?>
 <div class="row justify-content-end info_common_1">
     <p>作成日 <?php the_time( 'Y年n月j日' ); ?></p>
     <p>更新日 <?php the_modified_date( 'Y年n月j日' ); ?></p>
@@ -62,6 +64,7 @@ else :
 <div class="title_common_1">
     <h1><?php echo esc_html( $name ); ?></h1>
 </div>
+<?php get_template_part( 'template-parts/breadcrumb' ); ?>
 <div class="row d-lg-flex flex-row-reverse wrapper">
     <div class="col-lg-8 content common_1">
         <p><?php echo esc_html( $name ); ?>はありません。</p>

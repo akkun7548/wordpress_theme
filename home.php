@@ -15,6 +15,7 @@ get_header();
 <div class="title_common_1">
     <h1><?php echo esc_html( $title ); ?></h1>
 </div>
+<?php get_template_part( 'template-parts/breadcrumb' ); ?>
 <div class="row d-lg-flex flex-row-reverse wrapper">
     <div class="col-lg-8 content common_1">
         <?php

@@ -193,7 +193,7 @@ function yadoken_date_link( $object = true ) {
  * @return bool  判定結果
  */
 function yadoken_is_post_type_archive( $post_types = '' ) {
-  return is_post_type_archive( $post_types ) && ! ( is_date() || is_author() || is_category() || is_tag() || is_tax() );
+  return is_post_type_archive( $post_types ) && ! ( is_search() || is_date() || is_author() || is_category() || is_tag() || is_tax() );
 }
 
 ?>
