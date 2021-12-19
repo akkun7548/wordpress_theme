@@ -129,11 +129,8 @@ add_action( 'wp_head', function() {
       $part = $title . 'のカテゴリーの';
     } elseif( is_tag() && $title = single_tag_title( '', false ) ) {
       $part = $title . 'のタグが付いた';
-
-    /**
-     * カスタムタクソノミーは作成していないため未検証のコードになります。
-     * カスタムタクソノミーを作成した際は、一度正しく出力されているか確認してください。
-     */
+    } elseif( is_tax('yadoken_author') && $title = single_term_title( '', false ) ) {
+      $part = '著者:' . $title . 'の';
     } elseif( is_tax() && $title = single_term_title( '', false ) ) {
       $part = 'ターム:' . $title . 'の';
 

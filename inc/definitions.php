@@ -137,6 +137,8 @@ function yadoken_archive_and_search_title( $name ) {
     $title = single_cat_title( 'カテゴリー：', false );
   } elseif( is_tag() ) {
     $title = single_tag_title( 'タグ：', false );
+  } elseif ( is_tax('yadoken_author') ) {
+    $title = single_term_title( '著者：', false );
   } elseif( is_tax() ) {
     $title = single_term_title( 'ターム：', false );
   } elseif( is_day() && $time = get_the_time( 'Y年n月j日' ) ) {

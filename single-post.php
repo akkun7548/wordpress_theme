@@ -13,6 +13,7 @@ get_template_part( 'template-parts/breadcrumb' ); ?>
         <article <?php post_class(); ?>>
             <h1><?php the_title(); ?></h1>
             <div class="row justify-content-end date">
+                <?php yadoken_author_link('<p>著者：<object>', '、', '</object></p>'); ?>
                 <p>カテゴリー：<object><?php the_category( '、' ) ?></object></p>
                 <?php the_tags('<p>タグ ',', ','</p>'); ?>
                 <p>投稿日 <?php yadoken_date_link( $date_format ); ?></p>
