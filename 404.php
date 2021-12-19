@@ -5,15 +5,15 @@
  */
 get_header();
 ?>
-<div class="title_common_1">
+<div class="title">
     <h1>404エラー</h1>
 </div>
 <?php get_template_part( 'template-parts/breadcrumb' ); ?>
-<div class="row d-lg-flex flex-row-reverse wrapper">
-    <div class="col-lg-8 content common_1">
+<div class="row d-lg-flex flex-row-reverse main-wrapper">
+    <div class="col-lg-8 main-content">
         <p>ご指定されたページは見つかりませんでした。</p>
     </div>
-    <aside class="col-lg-4 align-self-lg-stretch sidebar">
+    <aside class="col-lg-4 align-self-lg-stretch main-sidebar">
         <?php get_sidebar(); ?>
     </aside>
 </div>

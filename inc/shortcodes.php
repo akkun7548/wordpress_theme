@@ -5,6 +5,7 @@
  * ショートコードの定義をまとめました。
  */
 
+ 
 /**
  * クエリ生成
  * 
@@ -71,6 +72,18 @@ function yadoken_searchform_shortcode() {
 }
 
 /**
+ * 取得した記事に関する情報を表示
+ * 
+ * @return string  出力するHTML
+ */
+add_shortcode( 'count', 'yadoken_count_shortcode' );
+function yadoken_count_shortcode() {
+  ob_start();
+  get_template_part( 'template-parts/count' );
+  return ob_get_clean();
+}
+
+/**
  * ソートメニュー出力
  * 
  * ソートを有効にしているサブループの投稿を並べ替えるフォームを出力します。
@@ -112,43 +125,37 @@ function yadoken_loop_shortcode( $atts ) {
   /**初期値では、yadoken_display_post()により出力するようにしています。 */
   extract( shortcode_atts( array( 'format' => '' ), $atts, 'loop' ) );
   if( $yadoken_query->have_posts() ) {
+    /**それぞれ前後に挿入する文字列 */
+    $before = '';
+    $after  = '';
+    switch( $format ) {
+      case 'news':
+        $before = '<dl class="update_info">' . "\n";
+        $after  = '</dl>' . "\n";
+        function yadoken_news() { ?>
+          <dt><?php the_time( 'Y/m/d' ); ?></dt>
+          <dd><a href="<?php the_permalink(); ?>"><?php the_title(); ?>を公開しました。</a></dd> <?php
+        }
+        $func = 'yadoken_news';
+        break;
+      default:
+        $func = 'yadoken_display_post';
+    }
     //バッファリングに出力しています。
     ob_start();
     while( $yadoken_query->have_posts() ) {
       $yadoken_query->the_post();
-      switch( $format ) {
-        case 'summary':
-          get_template_part( 'template-parts/summary' );
-          break;
-        case 'title':
-          get_template_part( 'template-parts/title' );
-          break;
-        case 'list':
-          get_template_part( 'template-parts/list' );
-          break;  
-        case 'news': ?>
-          <dt><?php the_time( 'Y/m/d' ); ?></dt><dd><a href="<?php the_permalink(); ?>"><?php the_title(); ?>を掲載しました。</a></dd> <?php
-          break;
-        default:
-          yadoken_display_post();
-      }
+      /**可変関数 */
+      $func();
     }
     //バッファリングへの出力をまとめて変数に格納しています。
-    $str = ob_get_clean();
-    wp_reset_postdata(); 
+    $str = $before . ob_get_clean() . $after;
+    wp_reset_postdata();
+  /**記事がなかった場合 */
   } else {
     //投稿タイプネームラベルを取得しています。
     $name = yadoken_post_type_name( $yadoken_query->get( 'post_type' ) );
-    //表示形式毎に、記事がなかった場合の出力を設定しています。
-    switch( $format ) {
-      case 'summary':
-      case 'title':
-      case 'list':
-        $str = '<p>' . $name . 'はありません。</p>';
-        break;
-      default:
-        $str = '';
-    }
+    $str = '<p>' . $name . 'はありません。</p>';
   }
   return $str;
 }
@@ -163,6 +170,8 @@ function yadoken_loop_shortcode( $atts ) {
  */
 add_shortcode( 'pagination', 'yadoken_pagination_shortcode' );
 function yadoken_pagination_shortcode() {
+  /**paginate_links()に渡す引数 */
+  $args = array();
   /**
    * 個別ページの場合、ページネーションはサブループに用いられるものに限定されるため、
    * ショートコードqueryで生成した$yadoken_queryが存在しない場合はreturnしています。
@@ -173,8 +182,7 @@ function yadoken_pagination_shortcode() {
       return;
     }
     $query = $yadoken_query;
-    $base = get_permalink() . '%_%';
-    $format = strpos( $base, '?' ) === false ? '?paged=%#%' : '&paged=%#%';
+    $args = array( 'total' => $query->max_num_pages );
   /**
    * 個別ページ以外の全ページ(アーカイブページや検索結果ページなど)、メインループが複数記事を
    * クエリする場合はwp_queryからページネーションを生成しています。
@@ -182,9 +190,6 @@ function yadoken_pagination_shortcode() {
   } else {
     global $wp_query;
     $query = $wp_query;
-    $big = 999999999;
-    $base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
-    $format = '?paged=%#%';
   }
   $str = '';
   /**
@@ -194,12 +199,7 @@ function yadoken_pagination_shortcode() {
    */
   if ( $query->max_num_pages > 1 ) {
     $str .= '<div class="row justify-content-center pagination stripe">' . "\n";
-    $str .= paginate_links( array(
-      'base' => $base,
-      'format' => $format,
-      'current' => max( 1, get_query_var( 'paged', 1 ) ),
-      'total' => $query->max_num_pages,
-    ));
+    $str .= paginate_links( $args ) . "\n";
     $str .= '</div>' . "\n";
   }
   return $str;

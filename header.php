@@ -24,13 +24,14 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbar">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav mr-auto">
                 <?php
                 $args = array(
                     'theme_location' => 'header-nav',
                     'container' => '',
                     'items_wrap' => '%3$s',
-                    'walker' => new yadoken_walker_nav_menu
+                    'walker' => new yadoken_walker_nav_menu,
+                    
                 );
                 wp_nav_menu( $args );
                 ?>

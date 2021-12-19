@@ -5,46 +5,48 @@
  */
 
 /**
- * ページネーションと同様に個別ページではサブループが存在しない場合はソート対象、記事件数が
- * ないため何も出力しません。
+ * ソート後のリンクに反映されるGETパラメーター
  * 
+ * クエリ変数として有効なものを指定してください。
  */
-if( is_singular() ) {
-    global $yadoken_query;
-    if( empty( $yadoken_query ) ) {
-        return;
-    }
-    $post_count = '表示件数：' . $yadoken_query->post_count . '件';
-} else {
-    $post_count = '表示件数：' . $wp_query->post_count . '件';
-}
-//ソート後のリンクに反映されるGETパラメーター
 $keys = array( 's', 'post_type' );
-//出力するHTML
-$str = '';
 /**
- * filter_inputは配列のGETに対してfalseを返します。配列が必要なクエリ変数があった場合は
- * 適宜変更をお願いします。
+ * 現在のソートの状態を取得
+ * 
+ * 可変変数として利用しているため、変数名を変更する際は注意してください。
  */
-foreach( $keys as $key ) {
-    if( $value = wp_unslash( filter_input( INPUT_GET, $key ) ) ) {
-        $str .= '<input type="hidden" value="' . esc_attr( $value ) . '" name="' . esc_attr( $key ) . '">' . "\n";
+$orderby = isset( $_GET['orderby'] ) ? $_GET['orderby'] : '';
+$order   = isset( $_GET['order'] ) ? $_GET['order'] : '';
+/**ソートに利用するGETパラメーターとその値 */
+$select  = array(
+    'orderby' => array(
+        'date'     => '投稿日',
+        'modified' => '更新日',
+        'title'    => 'タイトル'    
+    ),
+    'order'   => array(
+        'DESC' => '降順',
+        'ASC'  => '昇順'    
+    )
+);
+/**get_pagenum_link()は内部でエスケープを行っています。 */ ?>
+<form role="select" method="get" action="<?php echo get_pagenum_link( get_query_var( 'paged', 1 ) ); ?>">
+    <?php
+    /**取得したGETパラメーターをinputタグとして出力 */
+    foreach( $keys as $key ) {
+        if( isset( $_GET[$key] ) ) {
+            $value = get_query_var( $key, '' );
+            echo "\t" . '<input type="hidden" value="' . esc_attr( $value ) . '" name="' . esc_attr( $key ) . '">' . "\n";
+        }
     }
-}
-?>
-<div class="row justify-content-between align-items-center searchform stripe">
-    <p><?php echo esc_html( $post_count ); ?></p>
-    <form role="select" method="get" class="ml-auto" action="<?php echo esc_url( get_pagenum_link( 1 ) ); ?>">
-        <?php echo $str; ?>
-        <select name="orderby">
-            <option value="date">投稿日</option>
-            <option value="modified">更新日</option>
-            <option value="title">タイトル</option>
-        </select>
-        <select name="order">
-            <option value="DESC">降順</option>
-            <option value="ASC">昇順</option>
-        </select>
-        <input type="submit" value="並べ替え">
-    </form>
-</div>
+    /**ソートに利用するプルダウンメニューを出力 */
+    foreach( $select as $name => $array ) {
+        echo "\t" . '<select name="' . esc_attr( $name ) . '">' . "\n";
+        foreach( $array as $value => $title ) {
+            /**可変変数${}を利用しています。 */
+            echo "\t\t" . '<option value="' . esc_attr( $value ) . '"' . selected( ${$name}, $value, false ) . '>' . esc_html( $title ) . '</option>' . "\n";
+        }
+        echo "\t" . '</select>' . "\n";
+    } ?>
+    <input type="submit" value="並べ替え">
+</form>

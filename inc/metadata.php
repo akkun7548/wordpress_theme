@@ -1,9 +1,26 @@
 <?php
+
 /**
  * HTMLのメタ情報を出力
  * 
- * head内/footer下部への出力を変更する関数です。
+ * head内/footer下部への出力を変更しています。
+ * 
+ * - wp_head/wp_generator
+ *  - wordpressバージョンを示すメタタグを削除
+ * 
+ * - wp_head
+ *  - ヘッダーにメタデータを出力
+ * 
+ * - wp_enqueue_scripts
+ *  - stylesheet, javascript外部ファイルを読み込む
+ * 
+ * - style_loader_tag
+ *  - bootstrapをcdn化
+ * 
+ * - script_loader_tag
+ *  - bootstrapをcdn化
  */
+
 
 /**
  * wordpressを使用していることやそのバージョンを伝えるタグの削除
@@ -12,6 +29,7 @@
  * <meta name="generator" content="WordPress 5.3.2" />
  */
 remove_action( 'wp_head', 'wp_generator' );
+
 
 /**
  * metaタグなどの出力
@@ -30,8 +48,8 @@ remove_action( 'wp_head', 'wp_generator' );
  * また、個別ページはページネーションを設定しているものでも先頭から読んでもらいたいものであると
  * 判断したため、ページネーションは反映されません。
  */
-add_action( 'wp_head', 'yadoken_head' );
-function yadoken_head() {
+add_action( 'wp_head', function() {
+
   //現在のページのurl
   $ogp_url = '';
   //現在のページのタイトル(ブラウザのタブなどに表示されます。)
@@ -48,6 +66,7 @@ function yadoken_head() {
   $str = '';
   //サイトの名前
   $blog_name = get_bloginfo( 'name' );
+
   /**
    * og:title, og:descr, og:urlを設定しています。
    * 全てのページに設定しているつもりですが、出力がおかしかったりなかったりする場合は
@@ -58,10 +77,12 @@ function yadoken_head() {
     $ogp_url = home_url();
     $ogp_title = $blog_name;
     $ogp_descr = get_bloginfo( 'description' );
+
   //個別ページの場合
   } elseif( is_singular() ) {
     $ogp_url = get_permalink();
     $title = get_the_title();
+
     //投稿、その他でタイトルの表示方法を変更しています。
     if( is_singular( 'post' ) ) {
       $ogp_title = $title;
@@ -69,39 +90,30 @@ function yadoken_head() {
       $ogp_title = sprintf( "%s | %s", $title, $blog_name );
     }
     $ogp_descr = get_the_excerpt();
+
   /**
-   * 投稿タイプアーカイブページの場合(yadoken_news以外)
+   * 投稿タイプアーカイブページの場合
    * 
    * それぞれの投稿タイプの全記事が表示されるページのみを設定しています。
+   * 
+   * yadoken_newsのアーカイブページの独自設定を廃止したため、yadoken_newsもこちらで出力しています。
    */
-  } elseif( is_home() || yadoken_is_post_type_archive( 'yadoken_minutes' ) ) {
+  } elseif( is_home() || yadoken_is_post_type_archive() ) {
     $ogp_url = get_pagenum_link( get_query_var( 'paged', 1 ), false );
-    $post_type = yadoken_post_type();
+    $name = yadoken_post_type_name( get_query_var( 'post_type', '' ) );
+
     /**
      * is_home()が有効なページは原則として 設定 > 表示設定 > ホームページの表示 > 投稿ページ
      * で指定されている固定ページのため、WP_Postオブジェクトがクエリされています。
      */
     if( ( $obj = get_queried_object() ) instanceof WP_Post ) {
-      $title = $obj->post_title;
+      $title = apply_filters( 'the_title', $obj->post_title );
     } else {
-      $title = yadoken_post_type_name( $post_type, ' ' );
+      $title = $name;
     }
     $ogp_title = sprintf( "%s | %s", $title, $blog_name );
-    $ogp_descr = sprintf( "%sの一覧ページです。", yadoken_post_type_name( $post_type, '、' ) );
-  /**
-   * archive-yadoken_news.phpで１記事のみをクエリして、個別ページと同じように見せています。
-   * このため、投稿が存在しない場合のデフォルト値はこちらで設定しています。
-   */
-  } elseif( yadoken_is_post_type_archive( 'yadoken_news' ) ) {
-    $ogp_url = get_pagenum_link( get_query_var( 'paged', 1 ), false );
-    if( $post = get_post() ) {
-      $title = $post->post_title;
-      $ogp_descr = $post->post_excerpt;
-    } else {
-      $title = yadoken_post_type_name( 'yadoken_news' );
-      $ogp_descr = 'やどけんからのお知らせのページです。';
-    }
-    $ogp_title = sprintf( "%s | %s", $title, $blog_name );
+    $ogp_descr = sprintf( "%sの一覧ページです。", $name );
+
   /**
    * アーカイブ、検索結果ページの場合
    * 
@@ -117,12 +129,14 @@ function yadoken_head() {
       $part = $title . 'のカテゴリーの';
     } elseif( is_tag() && $title = single_tag_title( '', false ) ) {
       $part = $title . 'のタグが付いた';
+
     /**
      * カスタムタクソノミーは作成していないため未検証のコードになります。
      * カスタムタクソノミーを作成した際は、一度正しく出力されているか確認してください。
      */
     } elseif( is_tax() && $title = single_term_title( '', false ) ) {
       $part = 'ターム:' . $title . 'の';
+
     /**
      * get_queried_object()で取得したオブジェクトがWP_Userのインスタンスでない場合は
      * こちらに分岐しないようにしてあります。
@@ -140,14 +154,16 @@ function yadoken_head() {
       $title = 'アーカイブ';
       $part = '';
     }
-    $post_type = yadoken_post_type();
-    $ogp_title = sprintf( "%s | %s", $title, yadoken_post_type_name( $post_type, ' ' ) );
-    $ogp_descr = sprintf( "%s%s一覧ページです。", $part, yadoken_post_type_name( $post_type, '、' ) );
+    $name = yadoken_post_type_name( get_query_var( 'post_type', '' ) );
+    $ogp_title = sprintf( "%s | %s", $title, $name );
+    $ogp_descr = sprintf( "%s%s一覧ページです。", $part, $name );
+
   //404エラーページの場合
   } elseif( is_404() ) {
     $ogp_url = home_url();
     $ogp_title = sprintf( "404 not found | %s", $blog_name );
     $ogp_descr = 'お探しのページは見つかりませんでした。';
+
   //その他の場合
   } else {
     $ogp_url = home_url();
@@ -157,6 +173,7 @@ function yadoken_head() {
   
   // og:typeの設定
   $ogp_type = is_front_page() ? 'website' : 'article';
+
   /**
    * og:imageの設定
    * postではサムネイルか記事内先頭の画像、その他ではサイトアイコンにしています。
@@ -170,8 +187,10 @@ function yadoken_head() {
   } else {
    $ogp_img = get_site_icon_url();
   }
+
   // ツイッターアカウントID
   $twitter_account = 'yadoken_tsukuba';
+
   /**
    * 他のファイルで使う変数
    * サイドバー、カスタムHTML内のショートコードで使用しています。
@@ -180,10 +199,12 @@ function yadoken_head() {
   $yadoken_pageinfo['enc_url'] = urlencode( esc_url( $ogp_url ) );
   $yadoken_pageinfo['enc_title'] = urlencode( esc_attr( $ogp_title ) );
   $yadoken_pageinfo['esc_twitter'] = esc_attr( $twitter_account );
+
   // metaタグ、title
   $str .= '<title>' . esc_attr( $ogp_title ) . '</title>' . "\n";
   $str .= '<meta name="description" content="' . esc_attr( $ogp_descr ) . '">' . "\n";
   $str .= '<meta name="thumbnail" content="' . esc_url( $ogp_img ) . '">' . "\n";
+
   // OGP
   $str .= '<meta property="og:title" content="' . esc_attr( $ogp_title ) . '">' . "\n";
   $str .= '<meta property="og:description" content="' . esc_attr( $ogp_descr ) . '">' . "\n";
@@ -192,11 +213,14 @@ function yadoken_head() {
   $str .= '<meta property="og:image" content="' . esc_url( $ogp_img ) . '">' . "\n";
   $str .= '<meta property="og:site_name" content="' . esc_attr( $blog_name ) . '">' . "\n";
   $str .= '<meta property="og:locale" content="ja_JP">' . "\n";
+
   // twitter
   $str .= '<meta name="twitter:card" content="summary">' . "\n";
   $str .= '<meta name="twitter:site" content="@' . esc_attr( $twitter_account ) . '">' . "\n";
+  
   echo $str;
-}
+});
+
 
 /**
  * stylesheet, javascriptファイルの読み込み
@@ -204,8 +228,8 @@ function yadoken_head() {
  * style.cssを更新した際にはwp_enqueue_style()のversionを上げておくとブラウザのキャッシュが
  * 更新されます。
  */
-add_action( 'wp_enqueue_scripts', 'yadoken_enqueue_scripts' );
-function yadoken_enqueue_scripts() {
+add_action( 'wp_enqueue_scripts', function() {
+
   $version = wp_get_theme()->get( 'Version' );
   wp_enqueue_style( 'bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' );
   wp_enqueue_style( 'fontawesome', 'https://use.fontawesome.com/releases/v5.6.1/css/all.css' );
@@ -216,7 +240,8 @@ function yadoken_enqueue_scripts() {
   wp_enqueue_script( 'slick', 'https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js', array( 'jquery' ), false, true );
   wp_enqueue_script( 'bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js', array( 'jquery', 'popper' ), false, true );
   wp_enqueue_script( 'script', get_template_directory_uri() . '/js/script.js', array( 'jquery', 'slick' ), $version, true );
-}
+});
+
 
 /**
  * bootstrapのcssをcdn化する対応
@@ -229,8 +254,8 @@ function yadoken_enqueue_scripts() {
  * @param string $media   タグのメディア属性値
  * @return string  出力するリンクタグ全体
  */
-add_filter( 'style_loader_tag', 'yadoken_add_attributes_to_styles', 10, 4 );
-function yadoken_add_attributes_to_styles( $html, $handle, $href, $media ) {
+add_filter( 'style_loader_tag', function( $html, $handle, $href, $media ) {
+
   if( $handle === 'bootstrap' ) {
     $type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
     $html = sprintf(
@@ -242,7 +267,8 @@ function yadoken_add_attributes_to_styles( $html, $handle, $href, $media ) {
     );
   }
   return $html;
-}
+}, 10, 4 );
+
 
 /**
  * bootstrapのjs,popperをcdn化する対応
@@ -254,8 +280,8 @@ function yadoken_add_attributes_to_styles( $html, $handle, $href, $media ) {
  * @param string $src     スクリプトのソースurl
  * @return string  scriptタグ
  */
-add_filter( 'script_loader_tag', 'yadoken_add_attributes_to_scripts', 10, 3 );
-function yadoken_add_attributes_to_scripts( $tag, $handle, $src ) {
+add_filter( 'script_loader_tag', function( $tag, $handle, $src ) {
+
   switch( $handle ) {
     case 'popper':
       $type_attr = current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"';
@@ -267,6 +293,7 @@ function yadoken_add_attributes_to_scripts( $tag, $handle, $src ) {
       break;
   }
   return $tag;
-}
+
+}, 10, 3 );
 
 ?>

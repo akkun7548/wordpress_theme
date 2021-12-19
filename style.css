@@ -2,7 +2,9 @@
 /*
 Theme Name: yadoken
 Description: 筑波大学野生動物研究会のオリジナルテーマです。
-Version: 1.2.0
+Version: 1.2.1
+Author: 野生動物研究会
+Author URI: https://www.stb.tsukuba.ac.jp/~yadoken/
 */
 
 /* ================================== <全ページ共通> ================================== */
@@ -21,21 +23,21 @@ main {
 .with-slider {
     padding-top: 0;
 }
-.wrapper {
+.main-wrapper {
     width: 100%;
     margin-right: auto;
     margin-left: auto;
 }
-.content {
+.main-content {
     padding: 10px 0 20px 10px;
 }
-.sidebar {
+.main-sidebar {
     padding: 10px 10px 20px 0;
 }
-.content a, .sidebar ul a, .footer a {
+.main-content a, .main-sidebar ul a, .footer a {
     color: #ff8800;
 }
-.content a:hover, .sidebar ul a:hover, .footer a:hover {
+.main-content a:hover, .main-sidebar ul a:hover, .footer a:hover {
     color: #ff5100;
     text-decoration: none;
 }
@@ -195,6 +197,7 @@ dl.update_info dd {
 .breadcrumb {
     background-color: inherit;
     margin-bottom: 0;
+    padding-bottom: 0;
 }
 .breadcrumb a {
     color: #ff8800;
@@ -306,14 +309,14 @@ dl.update_info dd {
 /* ================================ <共通1 (common_1)> ================================ */
 /* 以下のページに対しての共通スタイリングです。
 page.php, single-yadoken_news.php, archive.php, archive-news.php, search.php 404.php home.php*/
-.title_common_1 {
+.common_1 main > .title {
     background-color: white;
     margin: 0 0 5px;
     padding-bottom: 13px;
     border: 1px solid #96664b;
     border-radius: 2px;
 }
-.title_common_1 h1 {
+.common_1 main > .title h1 {
     font-size: 1.6rem;
     background-color: #96664b;
     color: #f5f1e9;
@@ -321,18 +324,18 @@ page.php, single-yadoken_news.php, archive.php, archive-news.php, search.php 404
     padding: 8px 7px 7px;
     text-align: center;
 }
-.info_common_1 {
+.common_1 main > .date {
     width: 100%;
     margin-right: 0;
     margin-left: 0;
     padding: 5px 0;
 }
-.info_common_1 p {
-    font-size: 0.9rem;
+.common_1 main > .date p {
     margin-bottom: 0;
     padding: 5px;
 }
-.common_1 > h2 {
+.common_1 .main-content > h2,
+article.content > h2 {
     font-size: 1.4rem;
     color: #441e08;
     padding: 7px;
@@ -342,54 +345,66 @@ page.php, single-yadoken_news.php, archive.php, archive-news.php, search.php 404
     border-left: 5px solid #441e08;
     border-radius: 5px 3px;
 }
-.common_1 > h3 {
+.common_1 .main-content > h3,
+article.content > h3 {
     font-size: 1.2rem;
     color: #441e08;
     padding: 7px 5px;
     border-bottom: 2px solid black;
 }
-.common_1 > h4 {
+.common_1 .main-content > h4,
+article.content > h4 {
     font-size: 1.1rem;
     color: #441e08;
     margin-left: 5px;
     padding-left: 7px;
     border-left: 2px solid #441e08;
 }
-.common_1 > p {
+.common_1 .main-content > p,
+article.content > p {
     line-height: 1.65rem;
     padding: 10px;
 }
-.common_1 > ul {
+.common_1 .main-content > ul,
+article.content > ul {
     margin-left: 10px;
     padding-left: 0;
 }
-.common_1 > ul li {
+.common_1 .main-content > ul li,
+article.content > ul li {
     list-style: none;
     padding-left: 12px;
     margin-top: 15px;
     margin-bottom: 15px;
     border-left: 6px double #441e08;
 }
-.common_1 > ol {
+.common_1 .main-content > ol,
+article.content > ol {
     padding-inline-start: 26px;
 }
-.common_1 > ol > li {
+.common_1 .main-content > ol > li,
+article.content > ol > li {
     margin-top: 13px;
     margin-bottom: 13px;
 }
-.common_1 > table {
+.common_1 .main-content > table,
+article.content > table {
     margin-bottom: 1.5rem;
 }
-.common_1 > table.alignleft {
+.common_1 .main-content > table.alignleft,
+article.content > table.alignleft {
     text-align: left;
 }
-.common_1 > table.aligncenter {
+.common_1 .main-content > table.aligncenter,
+article.content > table.aligncenter {
     text-align: center;
 }
-.common_1 > table.alignright {
+.common_1 .main-content > table.alignright,
+article.content > table.alignright {
     text-align: right;
 }
-.common_1 > table.alignnone {
+.common_1 .main-content > table.alignnone,
+article.content > table.alignnone {
     text-align: none;
 }
 
@@ -408,12 +423,12 @@ page.php, single-yadoken_news.php, archive.php, archive-news.php, search.php 404
     margin-bottom: 0;
     border-bottom: 2px solid #dad4cc;
 }
-.info_post {
+.post > .date {
     margin-right: 0;
     margin-left: 0;
     padding: 1px;
 }
-.info_post p {
+.post > .date p {
     font-size: 0.9rem;
     margin-bottom: 0;
     padding: 4px;
@@ -482,7 +497,8 @@ page.php, single-yadoken_news.php, archive.php, archive-news.php, search.php 404
 
 /* ============================= <テンプレートファイル> ============================= */
 /* ================================= comments.php ================================= */
-.comment-title, #reply-title {
+.comment-title,
+.comment-reply-title {
     font-size: 1.3rem;
     margin: 15px 0;
     padding: 5px;
@@ -499,11 +515,56 @@ textarea#comment {
     width: 100%;
     height: 100px;
 }
+p.comment-form-author label,
+p.comment-form-email label,
+p.comment-form-url label {
+    width: 8em;
+}
+
+/* ================================= content.php ================================= */
+article.content {
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border-top: 1px dotted #96664b;
+}
+article.content:first-child {
+    padding-top: 0;
+    border-top: none;
+}
+article.content > .title {
+    background-color: white;
+    margin: 3px 0;
+    padding-bottom: 13px;
+    border: 1px solid #96664b;
+    border-radius: 2px;
+}
+article.content > .title h2 {
+    font-size: 1.5rem;
+    background-color: #af714d;
+    color: #f5f1e9;
+    margin-bottom: 0;
+    padding: 7px;
+    text-align: center;
+}
+article.content > .date {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+    padding: 5px 0;
+}
+article.content > .date p {
+    margin-bottom: 0;
+    padding: 0 5px 5px;
+    font-size: 0.9rem;
+}
+article.content > a.more-link {
+    text-align: center;
+}
 
 /* ================================= summary.php ================================= */
 /* summaryの親要素はdivなどの構造が作れる要素になるようにしてください。 */
 /* aタグは親要素のコンテンツモデルを引き継ぐため、ここではdivタグのように扱っています。 */
-a.summary {
+.summary > a {
     background-color: white;
     color: black;
     min-height: 214px;
@@ -511,7 +572,7 @@ a.summary {
     padding: 10px;
     border: 1px solid rgb(201, 201, 201);
 }
-a.summary:hover {
+.summary > a:hover {
     color: black;
 }
 .summary figure {
@@ -533,52 +594,21 @@ a.summary:hover {
     border-left: 3px solid black;
     border-bottom: 3px double black;
 }
-.figure_summary {
+.summary .thumb {
     padding: 3px;
 }
-.excerpt_summary p {
+.summary .excerpt p {
     margin-bottom: 0;
     padding: 5px;
 }
-.info_summary {
+.summary .info {
     margin-right: 0;
     margin-left: 0;
     padding: 4px 0;
 }
-.info_summary p {
+.summary .info p {
     margin-bottom: 0;
     padding: 2px 6px;
-}
-
-/* ==================================== title.php ==================================== */
-a.title {
-    background-color: white;
-    color: black;
-    margin: 15px 1px;
-    padding: 3px;
-    border: 1px solid rgb(201, 201, 201);
-    transition: all 0.3s ease;
-}
-a.title:hover {
-    color: black;
-    filter: brightness(120%);
-}
-.col_title {
-    padding-right: 0;
-    padding-left: 0;
-}
-.row_title {
-    margin: 5px 0;
-    border-bottom: 3px double #441e08;
-}
-.title h2 {
-    font-size: 1.2rem;
-    margin-bottom: 0;
-    padding: 10px 5px;
-}
-.title p {
-    margin-bottom: 0;
-    padding: 5px 8px;
 }
 
 /* ==================================== その他 ==================================== */
@@ -589,7 +619,7 @@ a.title:hover {
 }
 .searchform p {
     margin-bottom: 0;
-    padding: 5px;
+    padding: 8px 5px;
 }
 .searchform form {
     padding: 5px;
@@ -661,7 +691,7 @@ a.list:hover {
 main {
     min-height: auto;
 }
-.content, .sidebar {
+.main-content, .main-sidebar {
     padding: 5px;
 }
 
@@ -674,7 +704,7 @@ main {
 main {
     padding: 70px 0 0;
 }
-.content {
+.main-content {
     padding: 0;
 }
 .navbar-brand img {
@@ -692,10 +722,16 @@ main {
 }
 
 /* ******************共通1****************** */
-.common_1 > p {
+.common_1 main > .title {
+    border-radius: 0;
+}
+.common_1 .main-content > h2 {
+    border-radius: 0;
+}
+.common_1 .main-content > p {
     padding: 5px;
 }
-.common_1 > table {
+.common_1 .main-content > table {
     font-size: 0.8rem;
 }
 
@@ -705,7 +741,7 @@ main {
 }
 
 /* **************テンプレートファイル************** */
-a.summary {
+.summary > a {
     height: auto;
     border: none;
     margin: 0;
@@ -713,11 +749,8 @@ a.summary {
 .summary img {
     padding: 10px;
 }
-:nth-child(odd).stripe.summary {
+:nth-child(odd).stripe.summary > a {
     background-color: #f5f1e9;
-}
-.title p {
-    padding: 3px 5px;
 }
 :nth-child(even).stripe {
     background-color: white;

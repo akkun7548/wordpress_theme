@@ -1,19 +1,25 @@
 <?php
 /**
  * このファイルはどのテンプレートファイルにも分岐しなかった場合に用いられます。
- * 投稿の数もなし、単体、複数の場合がそれぞれ考えられるため、条件分岐させています。
+ * sigular.phpを作成しているため、個別にページ以外のアーカイブ、検索結果ページなどがこちらの
+ * コードを利用して出力しています。
+ * また、テンプレートを作成しているものはそちらのファイルのコードを利用して出力されます。
  */
 get_header();
-if( $wp_query->post_count > 1 ) : ?>
-<div class="title_common_1">
-    <h1>アーカイブ</h1>
+$name = yadoken_post_type_name( get_query_var( 'post_type', '' ) ); ?>
+<div class="title">
+    <h1><?php yadoken_archive_and_search_title( $name ); ?></h1>
 </div>
 <?php get_template_part( 'template-parts/breadcrumb' ); ?>
-<div class="row d-lg-flex flex-row-reverse wrapper">
-    <div class="col-lg-8 content common_1">
-        <?php
-        echo do_shortcode( '[searchform]' );
-        get_template_part( 'template-parts/sortmenu' );
+<div class="row d-lg-flex flex-row-reverse main-wrapper">
+    <div class="col-lg-8 main-content">
+        <div class="row justify-content-end searchform stripe"><?php
+            get_search_form(); ?>
+        </div>
+        <div class="row justify-content-between searchform stripe"><?php
+            get_template_part( 'template-parts/count' );
+            get_template_part( 'template-parts/sortmenu' ); ?>
+        </div><?php
         if ( have_posts() ) :
             while ( have_posts() ) :
                 the_post();
@@ -21,54 +27,12 @@ if( $wp_query->post_count > 1 ) : ?>
             endwhile;
             echo do_shortcode( '[pagination]' );
         else : ?>
-            <P>該当する記事はありません。</p>                
+            <P>該当する<?php echo esc_html( $name ); ?>はありません。</p>                
         <?php
         endif; ?>
     </div>
-    <aside class="col-lg-4 align-self-lg-stretch sidebar">
+    <aside class="col-lg-4 align-self-lg-stretch main-sidebar">
         <?php get_sidebar(); ?>
     </aside>
 </div>
-<?php
-elseif( $wp_query->post_count === 1 ) :
-    if( have_posts() ) :
-        while( have_posts() ) :
-            the_post(); ?>
-<div class="title_common_1">
-    <h1><?php the_title(); ?></h1>
-</div>
-<?php get_template_part( 'template-parts/breadcrumb' ); ?>
-<div class="row justify-content-end info_common_1">
-    <p>作成日 <?php the_time( 'Y年n月j日' ); ?></p>
-    <p>更新日 <?php the_modified_date( 'Y年n月j日' ); ?></p>
-</div>
-<div class="row d-lg-flex flex-row-reverse wrapper">
-    <div <?php post_class( 'col-lg-8 content common_1' ); ?>>
-        <?php the_content(); ?>
-    </div>
-    <aside class="col-lg-4 align-self-lg-stretch sidebar">
-        <?php get_sidebar(); ?>
-    </aside>
-</div>
-        <?php
-        endwhile;
-    else :
-        wp_safe_redirect( home_url(), 302 );
-        exit;
-    endif;
-else : ?>
-<div class="title_common_1">
-    <h1>エラー</h1>
-</div>
-<?php get_template_part( 'template-parts/breadcrumb' ); ?>
-<div class="row d-lg-flex flex-row-reverse wrapper">
-    <div class="col-lg-8 content common_1">
-        <p>ご指定されたページは見つかりませんでした。</p>
-    </div>
-    <aside class="col-lg-4 align-self-lg-stretch sidebar">
-        <?php get_sidebar(); ?>
-    </aside>
-</div>
-<?php
-endif;
-get_footer(); ?>
+<?php get_footer(); ?>

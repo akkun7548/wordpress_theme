@@ -75,17 +75,4 @@ function yadoken_register( $link ) {
   return '';
 }
 
-/**
- * ログイン/ログアウトリンク無効化
- * 
- * メタ情報のウィジェットでログインページへのリンクが表示されないようにしました。
- * 
- * @param string $link  ログイン/ログアウトページへのリンク
- * @return string  変更後のリンク
- */
-add_filter( 'loginout', 'yadoken_loginout' );
-function yadoken_loginout( $link ) {
-  return preg_replace( '/<a.+?>(.*?)<\/a>/', '$1 (無効化中)', $link );
-}
-
 ?>

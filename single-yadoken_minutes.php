@@ -7,14 +7,15 @@ if( have_posts() ) :
     while( have_posts() ) :
         the_post();
 get_template_part( 'template-parts/breadcrumb' ); ?>
-<div class="row d-lg-flex flex-row-reverse wrapper">
-    <div <?php post_class( 'col-lg-8 content' ) ?>>
+<div class="row d-lg-flex flex-row-reverse main-wrapper">
+    <article <?php post_class( 'col-lg-8 main-content' ); ?>>
         <h1><?php the_title(); ?></h1>
         <?php the_content(); ?>
         <div style="clear: both;"></div>
         <?php wp_link_pages(); ?>
-    </div>
-    <aside class="col-lg-4 align-self-lg-stretch sidebar">
+        <?php comments_template(); ?>
+    </article>
+    <aside class="col-lg-4 align-self-lg-stretch main-sidebar">
         <?php get_sidebar(); ?>
     </aside>
 </div>

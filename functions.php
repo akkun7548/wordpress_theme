@@ -51,11 +51,25 @@ require $dir . '/inc/users.php';
 require $dir . '/inc/metadata.php';
 
 /**
+ * 見た目関係
+ * 
+ * htmlに関係する変更を行っているふぁいる
+ */
+require $dir . '/inc/appearances.php';
+
+/**
  * ウィジェット関係
  * 
  * ウィジェット関係のクラスやフィルターをまとめたファイル
  */
 require $dir . '/inc/widgets.php';
+
+/**
+ * カスタマイザー関係
+ * 
+ * カスタマイザーを定義しているファイル
+ */
+require $dir . '/inc/customize.php';
 
 /**
  * ショートコード

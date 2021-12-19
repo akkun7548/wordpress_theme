@@ -18,7 +18,7 @@
             ?>
         </ul>
     </div>
-    <small>&copy; 2019 野生動物研究会</small>
+    <small>&copy; <?php echo date('Y') ?> 野生動物研究会</small>
 </footer>
 <?php wp_footer(); ?>
 </body>

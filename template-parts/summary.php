@@ -10,21 +10,24 @@ if ( has_post_thumbnail() ) {
     $thumb = '<img src="' . esc_url( yadoken_first_image() ) . '" alt="' . esc_attr( get_the_title() ) . '">';
 }
 ?>
-<a href="<?php the_permalink(); ?>" class="row d-sm-flex summary stripe">
-    <div class="col-sm-3 d-sm-flex align-items-center figure_summary">
-        <figure>
-            <?php echo $thumb; ?>
-        </figure>
-    </div>
-    <div class="col-sm-9 d-sm-flex align-items-start flex-column">
-        <h3><?php the_title(); ?></h3>
-        <div class="my-auto excerpt_summary">
-            <?php the_excerpt(); ?>
+<article class="summary stripe">
+    <a href="<?php the_permalink(); ?>" class="row d-sm-flex">
+        <div class="col-sm-3 d-sm-flex align-items-center thumb">
+            <figure>
+                <?php echo $thumb; ?>
+            </figure>
         </div>
-        <div class="row info_summary">
-            <p>投稿者：<object><?php the_author_posts_link(); ?></object></p>
-            <p>投稿日：<?php yadoken_date_link(); ?></p>
-            <?php the_tags( '<p>タグ：<object>', '、', '</object></p>' ); ?>
+        <div class="col-sm-9 d-sm-flex align-items-start flex-column">
+            <h3><?php the_title(); ?></h3>
+            <div class="my-auto excerpt">
+                <?php the_excerpt(); ?>
+            </div>
+            <div class="row info">
+                <p>投稿日：<?php yadoken_date_link( get_option( 'date_format' ), '<object>', '</object>' ); ?></p>
+                <?php yadoken_author_link('<p>著者：<object>', '、', '</object></p>'); ?>
+                <?php the_tags( '<p>タグ：<object>', '、', '</object></p>' ); ?>
+                <p>カテゴリー：<object><?php the_category( '、' ) ?></object></p>
+            </div>
         </div>
-    </div>
-</a>
+    </a>
+</article>
