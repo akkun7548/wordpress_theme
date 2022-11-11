@@ -186,7 +186,7 @@ add_action( 'wp_head', function() {
   }
 
   // ツイッターアカウントID
-  $twitter_account = 'yadoken_tsukuba';
+  $twitter_account = 'yadoken_ITF_neo';
 
   /**
    * 他のファイルで使う変数
